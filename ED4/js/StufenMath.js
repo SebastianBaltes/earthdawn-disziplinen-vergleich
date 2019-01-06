@@ -51,7 +51,7 @@ var Dices = function(str) {
     }
   }
   
-  function prohabilityToReach(value, rolls) {
+  function probabilityToReach(value, rolls) {
 //    var distribution = new Array(Math.round(value)+2);
 //    for (var i = 0; i < distribution.length; i++) {
 //      distribution[i]=0;
@@ -88,19 +88,19 @@ var Dices = function(str) {
   
   return {
     roll: roll,
-    prohabilityToReach: prohabilityToReach 
+    probabilityToReach: probabilityToReach
   };
   
 };
 
-var prohability = function (stufe,wert) {
+var probability = function (stufe,wert) {
   var s = stufe;
   var w = wert;
   var s0 = Math.max(0,Math.min(149,Math.floor(s)));
   var w0 = Math.max(0,Math.min(500,Math.floor(w)));
   var s1 = s0+1;
   var w1 = w0+1;
-  var t = prohabilityDiceTable;
+  var t = probabilityDiceTable;
 //  return t[s0][w0];
   return t[s0][w0]*(s1-s)*(w1-w) + 
          t[s0][w1]*(s1-s)*(w-w0) + 
@@ -117,13 +117,13 @@ $(function(){
 //    table.col("Stufe",stufe);
 //    table.col("Würfel",Stufen[stufe]);
 //    for (var wert = 1; wert < 100; wert++) {
-//      table.col(wert,(prohability(stufe,wert) - dices.prohabilityToReach(wert,1000)).toFixed(1));
+//      table.col(wert,(probability(stufe,wert) - dices.probabilityToReach(wert,1000)).toFixed(1));
 //    }
 //  }
 //  $('body').append(table.toHtml());
 
   
-//  Dices(Stufen[4]).prohabilityToReach(4);
+//  Dices(Stufen[4]).probabilityToReach(4);
 //  
 //  var maxValue = 501;
 //  var maxStufe = Stufen.length;
@@ -132,7 +132,7 @@ $(function(){
 //    t[i] = new Array(maxValue);
 //    var dices = Dices(Stufen[i]);
 //    for (var j = 0; j < maxValue; j++) {
-//      t[i][j] = dices.prohabilityToReach(j,10000);
+//      t[i][j] = dices.probabilityToReach(j,10000);
 //    }
 //  }
 //  $('body').text(JSON.stringify(t));
@@ -144,7 +144,7 @@ $(function(){
 //    table.col("Stufe",stufe);
 //    table.col("Würfel",Stufen[stufe]);
 //    for (var wert = 1; wert < 100; wert++) {
-//      table.col(wert,dices.prohabilityToReach(wert));
+//      table.col(wert,dices.probabilityToReach(wert));
 //    }
 //  }
 //  $('body').append(table.toHtml());

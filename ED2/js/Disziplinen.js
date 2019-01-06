@@ -3,10 +3,10 @@
 var probe = function(stufe, mindestwurf) {
   //  return function(x) {
   //    var v = funValue(stufe,x);
-  //    return (1+v-Math.floor(v)) * Dices(Stufen[Math.floor(v)]).prohabilityToReach(funValue(mindestwurf,x));
+  //    return (1+v-Math.floor(v)) * Dices(Stufen[Math.floor(v)]).probabilityToReach(funValue(mindestwurf,x));
   //  };
   return function(x) {
-    return prohability(funValue(stufe, x), funValue(mindestwurf, x));
+    return probability(funValue(stufe, x), funValue(mindestwurf, x));
   };
   //    return div(stufe, mul(2, mindestwurf));
 };
