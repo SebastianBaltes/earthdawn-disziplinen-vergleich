@@ -1,0 +1,21 @@
+
+th,td {
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	font-size: 0.9em;
+}
+
+th {
+	font-size: 0.7em;
+}
+
+.slider .label {
+	margin-right: 1em;
+}
+.slider .value {
+	margin-left: 1em;
+}
+
+.options {
+	float: right;
+}
