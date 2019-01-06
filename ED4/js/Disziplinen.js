@@ -109,11 +109,11 @@ var Disziplinen = [
         Attribute: [
             "GES", "STÄ"
         ],
-        
-        // Krallenhand (1) :  Rang + STÄ + 3 
+
+        // Krallenhand (1) :  Rang + STÄ + 3
         // Waffenloser Kampf (1): Rang + GES
 
-        // Schaden + 1 Karma (5), 
+        // Schaden + 1 Karma (5),
         // Kobrastoß (5) 2Ü, Ini = Rang+Ges, pro Erfolg gegen Ini +2 auf Angriffsprobe (nur 1.)
         // Nachtreten (5) Ü1, Rang+Ges
         // Tigersprung (5), Ü1, Ini += Rang
@@ -130,12 +130,12 @@ var Disziplinen = [
                 SchadenProRundeSum: SchadenProRundeSum,
                 RundenVorbereitung: 0,
                 Überanstrengung: 0,
-                KarmaVerbrauch: 1,
+                KarmaVerbrauch: 2,
                 Angriffe: [
                     {
                         Art: kWsk,
                         Stufe: add(GES, Rang, Karma),
-                        Schaden: add(Rang, STÄ, 3),
+                        Schaden: add(Rang, STÄ, 3, Karma),
                         Treffer: MinWsk,
                         SchadenProRunde: StandardSchadenProRunde,
                         Wiederholungen: 1,
@@ -150,16 +150,16 @@ var Disziplinen = [
                 Karma: GrundKarma,
                 KomboKreis: 5,
                 Kombo: "Waffenloser Kampf + Krallenhand + Karma + Kobrastoss + Nachtreten + Tigersprung",
-                Ini: add(Rang,Rang,GES),
+                Ini: add(Rang,Karma,Rang,Karma,GES),
                 SchadenProRundeSum: SchadenProRundeSum,
                 RundenVorbereitung: 0,
                 Überanstrengung: 5,
-                KarmaVerbrauch: 4,
+                KarmaVerbrauch: 6,
                 Angriffe: [
                     {
                         Art: kWsk,
                         Stufe: add(GES, Rang, Karma, mul(2,Erfolge(Ini,GegnerIni))),
-                        Schaden: add(Rang, STÄ, 3, Karma),
+                        Schaden: add(Rang, STÄ, 3, Karma, Karma),
                         Treffer: MinWsk,
                         SchadenProRunde: StandardSchadenProRunde,
                         Wiederholungen: 1,
@@ -171,7 +171,7 @@ var Disziplinen = [
                     {
                         Art: kWsk,
                         Stufe: add(GES, Rang, Karma),
-                        Schaden: add(STÄ, Karma),
+                        Schaden: STÄ,
                         Treffer: MinWsk,
                         SchadenProRunde: StandardSchadenProRunde,
                         Wiederholungen: 1,
@@ -186,18 +186,18 @@ var Disziplinen = [
                 Karma: GrundKarma,
                 KomboKreis: 8,
                 Kombo: "Waffenloser Kampf + Krallenhand + Karma + Kobrastoss + Nachtreten + Tigersprung + Blutige Krallen",
-                Ini: add(Rang,Rang,GES),
+                Ini: add(Rang,Karma,Rang,Karma,GES),
                 SchadenProRundeSum: SchadenProRundeSum,
                 RundenVorbereitung: 0,
                 // maximale Angriffe, kann Rang nehmen, aber will maximal 8 Angriffe = unter Verwundungsschwelle
                 maximaleAngriffe: max(Rang, 8),
                 Überanstrengung: add(6,maximaleAngriffe),
-                KarmaVerbrauch: add(2,mul(2,WiederholungenBisAngriffFehlschlägt)),
+                KarmaVerbrauch: add(3,mul(3,WiederholungenBisAngriffFehlschlägt)),
                 Angriffe: [
                     {
                         Art: kWsk,
                         Stufe: add(GES, Rang, Karma, mul(div(2,maximaleAngriffe),Erfolge(Ini,GegnerIni))),
-                        Schaden: add(Rang, STÄ, 3, Karma),
+                        Schaden: add(Rang, STÄ, 3, Karma, Karma),
                         Treffer: MinWsk,
                         Wiederholungen: WiederholungenBisAngriffFehlschlägt,
                         SchadenProRunde: StandardSchadenProRunde,
@@ -209,7 +209,7 @@ var Disziplinen = [
                     {
                         Art: kWsk,
                         Stufe: add(GES, Rang, Karma),
-                        Schaden: add(STÄ, Karma),
+                        Schaden: add(STÄ),
                         Treffer: MinWsk,
                         SchadenProRunde: StandardSchadenProRunde,
                         Wiederholungen: 1,
@@ -230,6 +230,28 @@ var Disziplinen = [
         Attribute: [
             "WAH", "WIL"
         ],
+
+        // Talente:
+
+        // Fadenweben (1) 0Ü
+        // Spruchzauberei (1) 0Ü
+        // Erweiterte Matrix (5) -1 Faden
+        // Willenstärke (6) 1Ü
+
+        // Zauber:
+        // Astralspeer (1) 1F, myst, Wirkung: WIL+4 + 2/Erfolg + 2/Faden
+        // Geisterhand (1) 0F, myst, Dauer: 2 + 2/Erfolg Runden, Wirkung: WIL+2 + 2/Faden & -2 auf kWsk und mWsk
+        // Kreis der Kälte (2) 0F, myst, Dauer: Rang Minuten, Wirkung: Kreis+4 + 2/Erfolg,
+        // Nebelgeist beschwören (2) 1F, myst, Dauer: Rang Runden, Wirkung: Geist mit Angriff/Schaden Kreis+10 + 2/Faden
+        // Schmerzen (3) 0F, Dauer: Rang Runden, Wirkung: 3 Wunden
+        // Astralschlund (6) 2F, Dauer Rang Runden, phys, Kreis + 10 + 2/Faden
+        // Knochenbrecher (6) 2F, myst, WIL+6 * (1+Erfolg) eigentlich max 2 pro Gegner..
+        // Schwächende Düsternis (6) 2F, myst, 1 Wunde pro Runde
+        // Herzbeklemmung (7) 4F, myst, Rang Runden, WIL Schaden + 2/Faden + Imobilität
+        // Knochenpudding (7) 4F, myst, Rang+5 Runden, 3 Wunden + 1Wunde/Erfolg + Immobilität
+        // Üble Dämpfe (7) 2F, myst, Rang Runden, WIL+5 + 2/Faden
+        // Schattenfessel (8), 2F, myst, Rang Runden, Immobilität
+
         Kombos: [
             {
                 Karma: GrundKarma,
