@@ -11,7 +11,7 @@ $(function () {
     var Gegner_Delta_mRüstung = 0;
 
     $('.options').append(Slider("Kampfrunden", 1, 10, 1, refreshResult));
-    $('.options').append(Slider("MaximaleVorbereitungsRunden", 0, 10, 1, refreshResult));
+    $('.options').append(Slider("MaxRundenVorbereitung", 0, 10, 1, refreshResult));
     $('.options').append(Slider("Gegner_Grundwert", 1, 80, 1, refreshResult));
     $('.options').append(Slider("Gegner_Steigung", 0, 3, 0.1, refreshResult));
     $('.options').append(Slider("Gegner_Steigerungsbasis", 1, 1.66, 0.01, refreshResult));
@@ -32,6 +32,7 @@ $(function () {
         (function () {
             var d2s = {
                 Name: "Gegner",
+                Color: "rgba(0, 0, 0, 0.1)",
                 vorbereitung: []
             };
             disziplin2Schaden.push(d2s);
@@ -50,6 +51,7 @@ $(function () {
         (function () {
             var d2s = {
                 Name: "Geom. Mittel",
+                Color: "rgba(100, 100, 100, 0.5)",
                 vorbereitung: []
             };
             disziplin2Schaden.push(d2s);
@@ -63,59 +65,68 @@ $(function () {
             }
         })();
 
+        Disziplinen.forEach(disziplin =>disziplin.Kombos.forEach(kombo=> {
+            _.defaults(kombo, DefaultKombo);
+            kombo.Angriffe.forEach(angriff => {
+                _.defaults(kombo,DefaultAngriff);
+            });
+        }));
 
         _(Disziplinen).each(function (disziplin) {
             var d2s = {
                 Name: disziplin.Name,
-                vorbereitung: []
+                vorbereitung: [],
+                Color: disziplin.Color,
             };
             disziplin2Schaden.push(d2s);
-            for (var rundenVorbereitung = MaximaleVorbereitungsRunden; rundenVorbereitung <= MaximaleVorbereitungsRunden; rundenVorbereitung++) {
-                var d2s2v = {
-                    rundenVorbereitung: rundenVorbereitung,
-                    schaden: [],
-                    ersteRunde: {
+            for (var Kreis = 1; Kreis <= MAX_KREIS; Kreis++) {
+
+                for (var rundenVorlauf = 0; rundenVorlauf <= MaxRundenVorbereitung; rundenVorlauf++) {
+                    var d2s2v = {
+                        rundenVorbereitung: rundenVorlauf,
                         schaden: [],
-                        kombos: [],
-                    },
-                    folgeRunden: {
-                        schaden: [],
-                        kombos: []
-                    }
-                };
-                d2s.vorbereitung.push(d2s2v);
-                for (var Kreis = 1; Kreis <= MAX_KREIS; Kreis++) {
+                        ersteRunde: {
+                            schaden: [],
+                            kombos: [],
+                        },
+                        folgeRunden: {
+                            schaden: [],
+                            kombos: []
+                        }
+                    };
+                    d2s.vorbereitung.push(d2s2v);
+
                     var kombosInKreis = _.filter(disziplin.Kombos, function (kombo) {
-                        var char = createChar(disziplin, Kreis, kombo, rundenVorbereitung);
-                        return funValue(KomboKreis, char) <= Kreis && funValue(RundenVorbereitung, char) <= rundenVorbereitung;
+                        var char = createChar(disziplin, Kreis, kombo, rundenVorlauf);
+                        return funValue(KomboKreis, char) <= Kreis
+                            && funValue(RundenVorlaufMin, char) <= rundenVorlauf
+                            && funValue(RundenVorlaufMax, char) >= rundenVorlauf;
                     });
-                    _.each(kombosInKreis, function (kombo) {
-                        _.each(kombo.Angriffe, function (angriff) {
-                            angriff.SchadenEinzelrunde = StandardSchadenEinzelrunde;
-                            angriff.Erfolge = TrefferErfolge;
-                        });
-                        kombo.SchadenEinzelrundeSum = SchadenEinzelrundeSum;
-                    });
-                    _.chain(kombosInKreis).filter(function (kombo) {
-                        return !kombo.AngriffNurErsteRunde;
-                    }).sortBy(function (kombo) {
-                        var char = createChar(disziplin, Kreis, kombo, rundenVorbereitung);
-                        return -char.get("SchadenProRundeSum");
-                    }).take(1).each(function (kombo) {
-                        var char = createChar(disziplin, Kreis, kombo, rundenVorbereitung);
-                        char.Strategie = "Folgerunden";
-                        d2s2v.folgeRunden.schaden.push(char.get("SchadenProRundeSum"));
-                        d2s2v.folgeRunden.kombos.push(char);
-                    });
+
+                    // 1. Runde
                     _.chain(kombosInKreis).sortBy(function (kombo) {
-                        var char = createChar(disziplin, Kreis, kombo, rundenVorbereitung);
+                        var char = createChar(disziplin, Kreis, kombo, rundenVorlauf);
                         return -char.get("SchadenEinzelrundeSum");
                     }).take(1).each(function (kombo) {
-                        var char = createChar(disziplin, Kreis, kombo, rundenVorbereitung);
+                        var char = createChar(disziplin, Kreis, kombo, rundenVorlauf);
                         char.Strategie = "1. Runde";
                         d2s2v.ersteRunde.schaden.push(char.get("SchadenEinzelrundeSum"));
                         d2s2v.ersteRunde.kombos.push(char);
                     });
+
+                    // Folgerunden
+                    _.chain(kombosInKreis).filter(function (kombo) {
+                        return !kombo.AngriffNurErsteRunde;
+                    }).sortBy(function (kombo) {
+                        var char = createChar(disziplin, Kreis, kombo, rundenVorlauf);
+                        return -char.get("SchadenProRundeSum");
+                    }).take(1).each(function (kombo) {
+                        var char = createChar(disziplin, Kreis, kombo, rundenVorlauf);
+                        char.Strategie = "Folgerunden";
+                        d2s2v.folgeRunden.schaden.push(char.get("SchadenProRundeSum"));
+                        d2s2v.folgeRunden.kombos.push(char);
+                    });
+
                 }
             }
         });
@@ -186,20 +197,6 @@ $(function () {
         })();
 
 
-        var defaultColors = ["rgba(0, 0, 0, 0.1)",
-            "rgba(100, 100, 100, 0.5)",
-            "rgb(50, 170, 50)",
-            "rgb(200, 200, 100)",
-            "rgb(255, 0, 255)",
-            "rgb(0, 0, 255)",
-            "rgb(90, 243, 243)",
-            "rgb(250, 0, 0)",
-            "rgb(0, 0, 0)",
-            "#8A0829",
-            "rgb(210, 255, 255)",
-            "rgb(61, 133, 61)",
-            "rgb(255, 232, 76)",
-            "rgb(92, 200, 92)"];
         var colors = [];
         var series = [];
         var disIdx = 0;
@@ -207,7 +204,7 @@ $(function () {
         _.each(disziplin2Schaden, function (d2s) {
             var d2s2v = _.last(d2s.vorbereitung);
 //      for (var i = 0; i < d2s.vorbereitung.length; i++) {
-            colors.push(defaultColors[disIdx]);
+            colors.push(d2s.Color);
             var data = [];
             series.push({
                 label: d2s.Name,//+"_"+d2s2v.rundenVorbereitung,
@@ -225,7 +222,7 @@ $(function () {
         series[0].lines = {show: true, fill: true, fillColor: "rgba(0, 0, 0, 0.1)", lineWidth: 0};
         series[1].lines = {lineWidth: 15};
 
-        $('.result').append('<div id="placeholder" style="width:500px;height:500px;"></div>');
+        $('.result').append('<div id="placeholder" style="width:800px;height:800px;"></div>');
         $.plot("#placeholder", series, {
             colors: colors,
             series: {
@@ -299,83 +296,74 @@ $(function () {
 
 
         $('.result').append("<br/>");
-        var detailTableButton = $('<button>Details anzeigen</button>');
-        $('.result').append(detailTableButton);
-        detailTableButton.click(function () {
-            detailTableButton.hide();
-            var detailTable = Table([], 1);
-            detailTable.fixed("Kreis", 0);
-            (function () {
-                for (var j = 2; j < disziplin2Schaden.length; j++) {
-                    var d2s = disziplin2Schaden[j];
-                    _.each(d2s.vorbereitung, function (d2s2v) {
-                        _.each([d2s2v.ersteRunde, d2s2v.folgeRunden], function (runden) {
-                            _.each(runden.kombos, function (kombo) {
+        $('.result').append("<h3>Details</h3>");
+
+        var detailTable = Table([], 1);
+        detailTable.fixed("Kreis", 0);
+        (function () {
+            for (var j = 2; j < disziplin2Schaden.length; j++) {
+                var d2s = disziplin2Schaden[j];
+                _.each(d2s.vorbereitung, function (d2s2v) {
+                    _.each([d2s2v.ersteRunde, d2s2v.folgeRunden], function (runden) {
+                        _.each(runden.kombos, function (kombo) {
 //                if (d2s2v.rundenVorbereitung!=kombo.get("RundenVorbereitung")) {
 //                  return;
 //                }
 //                if (kombo.Kreis<8) {
 //                  return;
 //                }
-                                detailTable.newRow();
-                                detailTable.col("Disziplin", kombo.Disziplin.Name);//+"_"+d2s2v.rundenVorbereitung);
-                                detailTable.col("Kreis", kombo.Kreis);
-                                detailTable.col("Strategie", kombo.Strategie);
-                                detailTable.col("Kombo", kombo.get("Kombo"));
-                                Attribute.forEach(function (key, i) {
-                                    detailTable.col(key, kombo[key] + " (" + kombo[key + "Wert"] + ")");
-                                });
-                                detailTable.col("Rang", kombo.get("Rang"));
-                                detailTable.col("Karma", kombo.get("Karma"));
-                                detailTable.col("Waffe", kombo.get("Waffe"));
-                                detailTable.col("Kombo-Kreis", kombo.get("KomboKreis"));
-                                detailTable.col("Alchm Fehlschlag", kombo.get("AlchmFehlschlag"));
-                                detailTable.col("Runden Vorbereitung", kombo.get("RundenVorbereitung"));
-                                detailTable.col("Summe Schaden", kombo.get("SchadenEinzelrundeSum"));
-                                detailTable.col("Summe Schaden / Runde", kombo.get("SchadenProRundeSum"));
-                                detailTable.col("Kombo-Ini", kombo.get("kombo"));
-                                detailTable.col("ÜA", kombo.get("Überanstrengung"));
-                                detailTable.col("Karma", kombo.get("KarmaVerbrauch"));
-                                detailTable.col("Fäden", kombo.get("Fäden"));
-                                detailTable.col("Gegner-Ini", kombo.get("GegnerIni"));
-                                detailTable.col("Gegner-kWsk", kombo.get("GegnerWsk")[kWsk]);
-                                detailTable.col("Gegner-mWsk", kombo.get("GegnerWsk")[mWsk]);
-                                detailTable.col("Gegner-sWsk", kombo.get("GegnerWsk")[sWsk]);
-                                detailTable.col("Gegner-kRüstung", kombo.get("GegnerRüstung")[kWsk]);
-                                detailTable.col("Gegner-mRüstung", kombo.get("GegnerRüstung")[mWsk]);
-                                kombo.Angriffe.forEach(function (angriff, index) {
-                                    var char = _.extend({}, kombo, angriff);
-                                    var nr = index + 1;
-                                    detailTable.col("Angriff-" + nr + "-Art", char.get("Art"));
-                                    detailTable.col("Angriff-" + nr + "-Stufe", char.get("Stufe"));
-                                    detailTable.col("Angriff-" + nr + "-Treffer", char.get("Treffer"));
-                                    detailTable.col("Angriff-" + nr + "-Schadens-stufe", char.get("Schaden"));
-                                    detailTable.col("Angriff-" + nr + "-Erfolge", char.get("Erfolge"));
-                                    detailTable.col("Angriff-" + nr + "-Schaden", char.get("SchadenEinzelrundeSum"));
-                                    detailTable.col("Angriff-" + nr + "-Schaden / Runde", char.get("SchadenProRunde"));
-                                    detailTable.col("Angriff-" + nr + "-Wieder-holungen", char.get("Wiederholungen"));
-                                    detailTable.col("Angriff-" + nr + "-Runden Angriff als Aktion", char.get("AnzahlRundenAngriffAlsAktion"));
-                                    detailTable.col("Angriff-" + nr + "-Runden Angriff automatisch", char.get("FolgeRundenAngriffAutomatisch"));
-                                });
+                            detailTable.newRow();
+                            detailTable.col("Disziplin", kombo.Disziplin.Name);//+"_"+d2s2v.rundenVorbereitung);
+                            detailTable.col("Kreis", kombo.Kreis);
+                            detailTable.col("Strategie", kombo.Strategie);
+                            detailTable.col("Kombo", kombo.get("Kombo"));
+                            Attribute.forEach(function (key, i) {
+                                detailTable.col(key, kombo[key] + " (" + kombo[key + "Wert"] + ")");
+                            });
+                            detailTable.col("Rang", kombo.get("Rang"));
+                            detailTable.col("Karma", kombo.get("Karma"));
+                            detailTable.col("Waffe", kombo.get("Waffe"));
+                            detailTable.col("Kombo-Kreis", kombo.get("KomboKreis"));
+                            detailTable.col("Alchm Fehlschlag", kombo.get("AlchmFehlschlag"));
+                            detailTable.col("Summe Schaden", kombo.get("SchadenEinzelrundeSum"));
+                            detailTable.col("Summe Schaden / Runde", kombo.get("SchadenProRundeSum"));
+                            detailTable.col("Kombo-Ini", kombo.get("Ini"));
+                            detailTable.col("ÜA", kombo.get("Überanstrengung"));
+                            detailTable.col("Karma", kombo.get("KarmaVerbrauch"));
+                            detailTable.col("Fäden", kombo.get("Fäden"));
+                            detailTable.col("Erw-Fäden", kombo.get("ErweiterteFäden"));
+                            detailTable.col("WILS", kombo.get("WILS"));
+                            detailTable.col("Gegner-Ini", kombo.get("GegnerIni"));
+                            detailTable.col("Gegner-kWsk", kombo.get("GegnerWsk")[kWsk]);
+                            detailTable.col("Gegner-mWsk", kombo.get("GegnerWsk")[mWsk]);
+                            detailTable.col("Gegner-sWsk", kombo.get("GegnerWsk")[sWsk]);
+                            detailTable.col("Gegner-kRüstung", kombo.get("GegnerRüstung")[kWsk]);
+                            detailTable.col("Gegner-mRüstung", kombo.get("GegnerRüstung")[mWsk]);
+                            kombo.Angriffe.forEach(function (angriff, index) {
+                                var char = _.extend({}, kombo, angriff);
+                                var nr = index + 1;
+                                detailTable.col("Angriff-" + nr + "-Art", char.get("Art"));
+                                detailTable.col("Angriff-" + nr + "-Stufe", char.get("Stufe"));
+                                detailTable.col("Angriff-" + nr + "-Treffer", char.get("Treffer"));
+                                detailTable.col("Angriff-" + nr + "-Erfolge", char.get("Erfolge"));
+                                detailTable.col("Angriff-" + nr + "-Schadens-stufe", char.get("SchadenMitErfolgen"));
+                                detailTable.col("Angriff-" + nr + "-Schaden", char.get("SchadenEinzelrunde"));
+                                detailTable.col("Angriff-" + nr + "-Schaden / Runde", char.get("SchadenProRunde"));
+                                detailTable.col("Angriff-" + nr + "-Runden Leerlauf", char.get("RundenVorlauf"));
+                                detailTable.col("Angriff-" + nr + "-Wieder-holungen", char.get("Wiederholungen"));
+                                detailTable.col("Angriff-" + nr + "-Runden Angriff als Aktion", char.get("AnzahlRundenAngriffAlsAktion"));
+                                detailTable.col("Angriff-" + nr + "-Runden Angriff automatisch", char.get("FolgeRundenAngriffAutomatisch"));
                             });
                         });
                     });
-                }
-            })();
+                });
+            }
+        })();
 
-            var detailsDiv = $("<div class='details'/>");
-            detailsDiv.append(detailTable.toHtml());
-            $('.result').append(detailsDiv);
-            $('.details table').addClass('fancyTable').fixedHeaderTable({
-                fixedColumns: 4,
-                autoShow: true,
-                footer: false,
-                height: 600,
-                altClass: 'odd'
-            });
-
-        });
-
+        var detailsDiv = $("<div class='details'/>");
+        detailsDiv.append(detailTable.toHtml());
+        $('table',detailsDiv).addClass('fancyTable');
+        $('.result').append("<br/>").append(detailsDiv);
 
     }
 

@@ -19,3 +19,12 @@ th {
 .options {
 	float: right;
 }
+
+.details > table > tbody {
+	overflow:auto;
+	height:20em;
+	width:100%;
+}
+
+.details > table > thead > tr{
+}

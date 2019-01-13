@@ -126,3 +126,4 @@ function sumOver(key) {
 function integrate(start, end, f2) {
     return x => _.range(start, end).reduce((acc, i) => acc + f2(i)(x), 0);
 }
+

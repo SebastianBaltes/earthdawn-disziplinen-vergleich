@@ -57,6 +57,7 @@ var MinFadenweben = min(1, probe(add(WAH, Rang, Karma), Webschwierigkeit));
 var MinZauberWsk = mul(MinFadenweben, probe(Stufe, GegnerWsk));
 var KampfsinnRang = mul(probe(add(Rang, WAH), GegnerMwsk), MinIni, Rang);
 var KampfsinnKarmaRang = mul(probe(add(Rang, WAH, Karma), GegnerMwsk), MinIni, Rang);
+var Fehlschlag = val("Fehlschlag");
 var AlchmFehlschlag = mul(0.05, sub(3, min(3, sub(Kreis, MixturKreis))));
 var AlchmTreffer = sub(1, AlchmFehlschlag);
 var KarmaVerbrauchSchütze = min(15, Rang);
@@ -112,7 +113,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
@@ -135,7 +136,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
@@ -160,7 +161,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 Wiederholungen : WiederholungenBisAngriffFehlschlägt,
                 SchadenProRunde : StandardSchadenProRunde,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
@@ -198,7 +199,7 @@ var Disziplinen = [
                 Treffer : MinZauberWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -224,7 +225,7 @@ var Disziplinen = [
                 Treffer : MinZauberWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -252,7 +253,7 @@ var Disziplinen = [
                 Treffer : MinZauberWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -288,7 +289,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
@@ -311,7 +312,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
@@ -334,7 +335,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
@@ -357,7 +358,7 @@ var Disziplinen = [
                   Treffer : MinWsk,
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
-                  AlchmFehlschlag : 0,
+                  Fehlschlag : 0,
                   Fäden : 0,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
@@ -368,7 +369,7 @@ var Disziplinen = [
                   Treffer : MinWsk,
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
-                  AlchmFehlschlag : 0,
+                  Fehlschlag : 0,
                   Fäden : 0,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
@@ -407,7 +408,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -431,7 +432,7 @@ var Disziplinen = [
                 Treffer : MinZauberWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -455,7 +456,7 @@ var Disziplinen = [
                 Treffer : MinZauberWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -482,7 +483,7 @@ var Disziplinen = [
                 Treffer : MinZauberWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : Rang,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -506,7 +507,7 @@ var Disziplinen = [
                 Treffer : MinZauberWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -530,7 +531,7 @@ var Disziplinen = [
                 Treffer : MinZauberWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -555,7 +556,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : WiederholungenBisAngriffFehlschlägt,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -581,7 +582,7 @@ var Disziplinen = [
                 Treffer : MinZauberWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -605,7 +606,7 @@ var Disziplinen = [
                 Treffer : MinZauberWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -630,7 +631,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : WiederholungenBisAngriffFehlschlägt,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -655,7 +656,7 @@ var Disziplinen = [
                 Treffer : MinZauberWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : Rang,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -691,7 +692,7 @@ var Disziplinen = [
                 Treffer : MinZauberWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -718,7 +719,7 @@ var Disziplinen = [
                 // pro Runde ein Angriff möglich für Wirkungsdauer
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : Rang,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -745,7 +746,7 @@ var Disziplinen = [
                 // Macht automatisch Schaden pro Runde
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : Rang,
               }
@@ -770,7 +771,7 @@ var Disziplinen = [
                 // Bonus von 10%, da schon bei "gut" durch
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1.1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -795,7 +796,7 @@ var Disziplinen = [
                 // Der Angriff erfolgt mehrere Runden lang (Rang?)
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : Rang,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -820,7 +821,7 @@ var Disziplinen = [
                 // Macht automatisch Schaden pro Runde
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 2,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : Rang,
               }
@@ -846,7 +847,7 @@ var Disziplinen = [
             SchadenProRundeSum : SchadenProRundeSum,
             Überanstrengung : 0,
             KarmaVerbrauch : 1,
-            AlchmFehlschlag : AlchmFehlschlag,
+            Fehlschlag : AlchmFehlschlag,
             AlchmTreffer : AlchmTreffer,
             Angriffe : [
               {
@@ -870,7 +871,7 @@ var Disziplinen = [
             SchadenProRundeSum : SchadenProRundeSum,
             Überanstrengung : 0,
             KarmaVerbrauch : 1,
-            AlchmFehlschlag : AlchmFehlschlag,
+            Fehlschlag : AlchmFehlschlag,
             AlchmTreffer : AlchmTreffer,
             Angriffe : [
               {
@@ -894,7 +895,7 @@ var Disziplinen = [
             SchadenProRundeSum : SchadenProRundeSum,
             Überanstrengung : 0,
             KarmaVerbrauch : 1,
-            AlchmFehlschlag : AlchmFehlschlag,
+            Fehlschlag : AlchmFehlschlag,
             AlchmTreffer : AlchmTreffer,
             Angriffe : [
               {
@@ -918,7 +919,7 @@ var Disziplinen = [
             SchadenProRundeSum : SchadenProRundeSum,
             Überanstrengung : 0,
             KarmaVerbrauch : 2,
-            AlchmFehlschlag : AlchmFehlschlag,
+            Fehlschlag : AlchmFehlschlag,
             AlchmTreffer : AlchmTreffer,
             Angriffe : [
               {
@@ -945,7 +946,7 @@ var Disziplinen = [
             KarmaVerbrauch : 2,
             RundenVorbereitung : 1,
             RundenWirkung : Rang,
-            AlchmFehlschlag : AlchmFehlschlag,
+            Fehlschlag : AlchmFehlschlag,
             AlchmTreffer : AlchmTreffer,
             Angriffe : [
               {
@@ -972,7 +973,7 @@ var Disziplinen = [
             KarmaVerbrauch : 2,
             RundenVorbereitung : 2,
             RundenWirkung : Rang,
-            AlchmFehlschlag : AlchmFehlschlag,
+            Fehlschlag : AlchmFehlschlag,
             AlchmTreffer : AlchmTreffer,
             Angriffe : [
               {
@@ -997,7 +998,7 @@ var Disziplinen = [
             SchadenProRundeSum : SchadenProRundeSum,
             Überanstrengung : 0,
             KarmaVerbrauch : 2,
-            AlchmFehlschlag : AlchmFehlschlag,
+            Fehlschlag : AlchmFehlschlag,
             AlchmTreffer : AlchmTreffer,
             Angriffe : [
               {
@@ -1025,7 +1026,7 @@ var Disziplinen = [
             RundenWirkung : Rang,
             Überanstrengung : 0,
             KarmaVerbrauch : 2,
-            AlchmFehlschlag : AlchmFehlschlag,
+            Fehlschlag : AlchmFehlschlag,
             AlchmTreffer : AlchmTreffer,
             Angriffe : [
               {
@@ -1078,7 +1079,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }
@@ -1100,7 +1101,7 @@ var Disziplinen = [
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
                 Fäden : 0,
-                AlchmFehlschlag : AlchmFehlschlag,
+                Fehlschlag : AlchmFehlschlag,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -1122,7 +1123,7 @@ var Disziplinen = [
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
                 Fäden : 0,
-                AlchmFehlschlag : AlchmFehlschlag,
+                Fehlschlag : AlchmFehlschlag,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -1144,7 +1145,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }, {
@@ -1155,7 +1156,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }
@@ -1177,7 +1178,7 @@ var Disziplinen = [
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
                 Fäden : 0,
-                AlchmFehlschlag : AlchmFehlschlag,
+                Fehlschlag : AlchmFehlschlag,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
               }
@@ -1199,7 +1200,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }, {
@@ -1210,7 +1211,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }
@@ -1232,7 +1233,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }, {
@@ -1243,7 +1244,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }
@@ -1265,7 +1266,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }, {
@@ -1276,7 +1277,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }, {
@@ -1287,7 +1288,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }
@@ -1309,7 +1310,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }, {
@@ -1320,7 +1321,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }, {
@@ -1331,7 +1332,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }
@@ -1354,7 +1355,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }, {
@@ -1365,7 +1366,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }, {
@@ -1376,7 +1377,7 @@ var Disziplinen = [
                   SchadenProRunde : StandardSchadenProRunde,
                   Wiederholungen : 1,
                   Fäden : 0,
-                  AlchmFehlschlag : AlchmFehlschlag,
+                  Fehlschlag : AlchmFehlschlag,
                   AnzahlRundenAngriffAlsAktion : 1,
                   FolgeRundenAngriffAutomatisch : 0,
                 }
@@ -1412,7 +1413,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 SchadenProRunde : StandardSchadenProRunde,
                 Wiederholungen : 1,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
@@ -1436,7 +1437,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 Wiederholungen : 1,
                 SchadenProRunde : StandardSchadenProRunde,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
@@ -1448,7 +1449,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 Wiederholungen : 1,
                 SchadenProRunde : StandardSchadenProRunde,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
@@ -1472,7 +1473,7 @@ var Disziplinen = [
                 // bei aussergewöhnlich noch mal angreifen
                 Wiederholungen : 1.1,
                 SchadenProRunde : StandardSchadenProRunde,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
@@ -1484,7 +1485,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 Wiederholungen : 1,
                 SchadenProRunde : StandardSchadenProRunde,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
@@ -1508,7 +1509,7 @@ var Disziplinen = [
                 // bei aussergewöhnlich noch mal angreifen
                 Wiederholungen : 1.1,
                 SchadenProRunde : StandardSchadenProRunde,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
@@ -1520,7 +1521,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 Wiederholungen : 1,
                 SchadenProRunde : StandardSchadenProRunde,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
@@ -1545,7 +1546,7 @@ var Disziplinen = [
                 // bei aussergewöhnlich noch mal angreifen
                 Wiederholungen : 1.1,
                 SchadenProRunde : StandardSchadenProRunde,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,
@@ -1558,7 +1559,7 @@ var Disziplinen = [
                 Treffer : MinWsk,
                 Wiederholungen : 1,
                 SchadenProRunde : StandardSchadenProRunde,
-                AlchmFehlschlag : 0,
+                Fehlschlag : 0,
                 Fäden : 0,
                 AnzahlRundenAngriffAlsAktion : 1,
                 FolgeRundenAngriffAutomatisch : 0,

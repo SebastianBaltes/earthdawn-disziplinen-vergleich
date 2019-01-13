@@ -45,7 +45,7 @@ var Stufe= function(wert) {
 
 var Gegner_Grundwert = 1;
 var Gegner_Steigerungsbasis = 1;
-var Gegner_Steigung = 1;
+var Gegner_Steigung = 0;
 var Gegner_Delta_Ini = 0;
 var Gegner_Delta_kWsk = 2;
 var Gegner_Delta_mWsk = -1;
@@ -70,10 +70,10 @@ var Gegner = function(Kreis) {
   };
 };
 
-var Character = function(Disziplin,Kreis,RundenVorbereitung) {
-  var t = {};
+var Character = function(Disziplin,Kreis,RundenVorlauf) {
+  var t = _.extend({},Disziplin);
   t.Kreis = Kreis;
-  t.RundenVorbereitung = RundenVorbereitung;
+  t.RundenVorlauf = RundenVorlauf;
   t.Disziplin = Disziplin;
   _.union(Disziplin.Attribute,_.difference(["GES","STÄ","ZÄH","WAH","WIL","CHA"],Disziplin.Attribute)).forEach(function(key,i){
     t[key+"Wert"]=Attributswert(Disziplin.Attribute.length,Kreis,i);
@@ -98,5 +98,5 @@ var Character = function(Disziplin,Kreis,RundenVorbereitung) {
 };
 
 function createChar(disziplin,Kreis,kombo,rundenVorbereitung) {
-  return _.extend({},Character(disziplin,Kreis,rundenVorbereitung),kombo);
+  return _.extend({},DefaultCharacter,Character(disziplin,Kreis,rundenVorbereitung),kombo);
 }
