@@ -97,6 +97,18 @@ var Character = function(Disziplin,Kreis,RundenVorlauf) {
   return t;
 };
 
+function flattenInherits(x) {
+  if (x==null) {
+    return null;
+  }
+  if (x.inherits!=null) {
+      const inherits = flattenInherits(x.inherits);
+      delete x.inherits;
+      _.defaults(x,inherits);
+  }
+  return x;
+}
+
 function createChar(disziplin,Kreis,kombo,rundenVorbereitung) {
-  return _.extend({},DefaultCharacter,Character(disziplin,Kreis,rundenVorbereitung),kombo);
+  return _.extend({},Character(flattenInherits(disziplin),Kreis,rundenVorbereitung),flattenInherits(kombo));
 }

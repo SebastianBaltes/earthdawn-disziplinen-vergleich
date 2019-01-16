@@ -116,6 +116,7 @@ var SchadenEinzelrundeSum = sub(sumOver("Angriffe.SchadenEinzelrunde"), add(Übe
 
 var WillensstärkeKreis = val('WillensstärkeKreis');
 var Willensstärke = add(WIL,Rang,Karma);
+var FixKarmaVerbrauch = val('FixKarmaVerbrauch');
 
 var ifKreis = (kreis,thenPart,elsePart) => (x) => funValue(kreis,x)<=x.Kreis ? thenPart : elsePart;
 
@@ -124,31 +125,48 @@ var WILS = val('WILS');
 // TODO die Fäden müssen ja auch geschafft werden.... also Webschwierigkeit einbeziehen!
 var ErweiterteFäden = val('ErweiterteFäden');
 var StandardFäden = add(RundenVorlauf,ErweiterteFäden);
-var ExtraFäden = min(0,sub(Fäden,MinFäden));
+var ExtraFäden = max(0,sub(Fäden,MinFäden));
 var StandardFädenVorlaufMin = max(0,sub(MinFäden,ErweiterteFäden));
 var StandardFädenVorlaufMax = 20;
 
 var DefaultCharacter = {
-    ErweiterteFäden: ()=>x=>x.Disziplin.Zauberer ? [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0].reduce((acc,v,index)=>acc+(index<x.Kreis?v:0),0) : 0,
+    ErweiterteFäden: 0,
     WillensstärkeKreis: 1000,
     WILS: ifKreis(WillensstärkeKreis,Willensstärke,WIL),
     Karma: GrundKarma,
     Ini: GES,
     Zauberer: false,
+    Waffe: 4,
 };
 
+var DefaultZauberer = {
+    inherits: DefaultCharacter,
+    Zauberer: true,
+    WillensstärkeKreis: 6,
+    ErweiterteFäden: ()=>x=>x.Disziplin.Zauberer ? [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0].reduce((acc,v,index)=>acc+(index<x.Kreis?v:0),0) : 0,
+}
+
 var DefaultKombo = {
-    SchadenEinzelrundeSum: SchadenEinzelrundeSum,
-    SchadenProRundeSum: SchadenProRundeSum,
     Ini: GES,
-    Fäden: 0,
-    MinFäden: 0,
-    Webschwierigkeit: 0,
     Überanstrengung: 0,
+    Karma: GrundKarma,
     KarmaVerbrauch: 0,
-    Waffe: 0,
     RundenVorlaufMin: 0,
     RundenVorlaufMax: 0,
+    MinFäden: 0,
+    Fäden: 0,
+    Webschwierigkeit: 0,
+    SchadenEinzelrundeSum: SchadenEinzelrundeSum,
+    SchadenProRundeSum: SchadenProRundeSum,
+}
+
+var ZauberKombo = {
+    inherits: DefaultKombo,
+    KarmaVerbrauch: add(FixKarmaVerbrauch, Fäden),
+    RundenVorlaufMin: StandardFädenVorlaufMin,
+    RundenVorlaufMax: StandardFädenVorlaufMax,
+    Fäden: StandardFäden,
+    FixKarmaVerbrauch: 1,
 }
 
 var DefaultAngriff = {
@@ -177,7 +195,7 @@ var Disziplinen = [
         Attribute: [
             "WAH", "WIL", "GES"
         ],
-        Zauberer: true,
+        inherits: DefaultZauberer,
         // Talente:
 
         // Spruchzauberei (1) 0Ü
@@ -188,14 +206,15 @@ var Disziplinen = [
         // Erdpfeile (1) 1F, phys, Wirkung: WIL+3 + 2/Erfolg + 2/Faden
         // Flammenwaffe (1) 0F, phys, Wirkung: Waffe+4+2/Faden
 
-        WillensstärkeKreis: 6,
-        Waffe: 4,
 
         Kombos: [
             {
-                Karma: GrundKarma,
                 KomboKreis: 1,
                 Kombo: "Kampfstab + Flammenwaffe",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 5,
+                MinFäden: 0,
+                FixKarmaVerbrauch: 1,
                 Angriffe: [
                     {
                         Art: kWsk,
@@ -207,15 +226,12 @@ var Disziplinen = [
             },
 
             {
-                Karma: GrundKarma,
                 KomboKreis: 1,
                 Kombo: "Erdpfeile",
-                MinFäden: 0,
-                Fäden: StandardFäden,
-                RundenVorlaufMin: StandardFädenVorlaufMin,
-                RundenVorlaufMax: StandardFädenVorlaufMax,
+                inherits: ZauberKombo,
                 Webschwierigkeit: 5,
-                KarmaVerbrauch: add(1, Fäden),
+                MinFäden: 0,
+                FixKarmaVerbrauch: 1,
                 Angriffe: [
                     {
                         Art: kWsk,
@@ -489,6 +505,7 @@ var Disziplinen = [
             "WAH", "STÄ", "GES", "WIL"
         ],
         Waffe: 5,
+        inherits: DefaultCharacter,
 
         // Talente:
         // Blattschuss (1) 2Ü Rang
@@ -506,11 +523,11 @@ var Disziplinen = [
 
         Kombos: [
             {
-                Karma: GrundKarma,
                 KomboKreis: 1,
                 Kombo: "Blattschuss + Magische Markierung",
                 Überanstrengung: 3,
                 KarmaVerbrauch: add(Rang,1),
+                inherits: DefaultKombo,
                 Angriffe: [
                     {
                         Art: kWsk,
@@ -521,12 +538,12 @@ var Disziplinen = [
                 ]
             },
             {
-                Karma: GrundKarma,
                 KomboKreis: 5,
                 Kombo: "Blattschuss + Magische Markierung + Karma auf Schaden + Tigersprung",
                 Überanstrengung: 3,
                 KarmaVerbrauch: add(Rang,2),
                 Ini: add(GES,Rang),
+                inherits: DefaultKombo,
                 Angriffe: [
                     {
                         Art: kWsk,
@@ -537,12 +554,12 @@ var Disziplinen = [
                 ]
             },
             {
-                Karma: GrundKarma,
                 KomboKreis: 7,
                 Kombo: "Blattschuss + Magische Markierung + Karma auf Schaden + Brandpfeil",
                 Überanstrengung: 4,
                 KarmaVerbrauch: add(Rang,3),
                 Ini: add(GES,Rang,1),
+                inherits: DefaultKombo,
                 Angriffe: [
                     {
                         Art: kWsk,
@@ -553,12 +570,12 @@ var Disziplinen = [
                 ]
             },
             {
-                Karma: GrundKarma,
                 KomboKreis: 7,
                 Kombo: "(Blattschuss + Magische Markierung + Karma auf Schaden + Brandpfeil) * 2 (Zweiter Schuss)",
                 Überanstrengung: mul(2,4),
                 KarmaVerbrauch: mul(2,add(Rang,3)),
                 Ini: add(GES,Rang,1),
+                inherits: DefaultKombo,
                 Angriffe: [
                     {
                         Art: kWsk,
@@ -586,8 +603,7 @@ var Disziplinen = [
         Attribute: [
             "WAH", "WIL"
         ],
-        Waffe: 4,
-        Zauberer: true,
+        inherits: DefaultZauberer,
         // Talente:
 
         // Fadenweben (1) 0Ü
@@ -608,13 +624,13 @@ var Disziplinen = [
         // Üble Dämpfe (7) 2F, myst, Rang Runden, WIL+5 + 2/Faden
         // Schattenfessel (8), 2F, myst, Rang Runden, Immobilität
 
-        WillensstärkeKreis: 6,
 
         Kombos: [
             {
                 Karma: GrundKarma,
                 KomboKreis: 1,
                 Kombo: "Kampfstab",
+                inherits: DefaultKombo,
                 Angriffe: [
                     {
                         Art: kWsk,
@@ -625,14 +641,12 @@ var Disziplinen = [
                 ]
             },
             {
-                Karma: GrundKarma,
                 KomboKreis: 1,
                 Kombo: "Astralspeer",
                 MinFäden: 1,
-                Fäden: StandardFäden,
                 Webschwierigkeit: 5,
-                RundenVorbereitung: Fäden,
-                KarmaVerbrauch: add(1, Fäden),
+                FixKarmaVerbrauch: 1,
+                inherits: ZauberKombo,
                 Angriffe: [
                     {
                         Art: mWsk,
@@ -643,14 +657,12 @@ var Disziplinen = [
                 ]
             },
             {
-                Karma: GrundKarma,
                 KomboKreis: 1,
                 Kombo: "Geisterhand",
                 MinFäden: 0,
-                Fäden: StandardFäden,
                 Webschwierigkeit: 5,
-                RundenVorbereitung: Fäden,
-                KarmaVerbrauch: add(1, Fäden),
+                FixKarmaVerbrauch: 1,
+                inherits: ZauberKombo,
                 Angriffe: [
                     {
                         Art: mWsk,
@@ -662,14 +674,12 @@ var Disziplinen = [
                 ]
             },
             {
-                Karma: GrundKarma,
                 KomboKreis: 2,
                 Kombo: "Nebelgeist",
                 MinFäden: 1,
-                Fäden: StandardFäden,
                 Webschwierigkeit: 5,
-                RundenVorbereitung: Fäden,
-                KarmaVerbrauch: add(1, Fäden),
+                FixKarmaVerbrauch: 1,
+                inherits: ZauberKombo,
                 Angriffe: [
                     {
                         Art: mWsk,
@@ -681,16 +691,12 @@ var Disziplinen = [
                 ]
             },
             {
-                Karma: GrundKarma,
                 KomboKreis: 6,
                 Kombo: "Knochenbrecher",
-                Ini: GES,
-                SchadenProRundeSum: SchadenProRundeSum,
                 MinFäden: 2,
-                Fäden: StandardFäden,
                 Webschwierigkeit: 10,
-                RundenVorbereitung: Fäden,
-                KarmaVerbrauch: add(1, Fäden),
+                FixKarmaVerbrauch: 1,
+                inherits: ZauberKombo,
                 Angriffe: [
                     {
                         Art: mWsk,
@@ -714,6 +720,7 @@ var Disziplinen = [
         Attribute: [
             "GES", "STÄ"
         ],
+        inherits: DefaultCharacter,
 
         // Krallenhand (1) :  Rang + STÄ + 3
         // Waffenloser Kampf (1): Rang + GES
@@ -728,10 +735,10 @@ var Disziplinen = [
 
         Kombos: [
             {
-                Karma: GrundKarma,
                 KomboKreis: 1,
                 Kombo: "Waffenloser Kampf + Krallenhand",
                 KarmaVerbrauch: 2,
+                inherits: DefaultKombo,
                 Angriffe: [
                     {
                         Art: kWsk,
@@ -742,12 +749,12 @@ var Disziplinen = [
                 ]
             },
             {
-                Karma: GrundKarma,
                 KomboKreis: 5,
                 Kombo: "Waffenloser Kampf + Krallenhand + Karma + Kobrastoss + Nachtreten + Tigersprung",
                 Ini: add(Rang,Karma,Rang,Karma,GES),
                 Überanstrengung: 5,
                 KarmaVerbrauch: 6,
+                inherits: DefaultKombo,
                 Angriffe: [
                     {
                         Art: kWsk,
@@ -765,7 +772,6 @@ var Disziplinen = [
                 ]
             },
             {
-                Karma: GrundKarma,
                 KomboKreis: 8,
                 Kombo: "Waffenloser Kampf + Krallenhand + Karma + Kobrastoss + Nachtreten + Tigersprung + Blutige Krallen",
                 Ini: add(Rang,Karma,Rang,Karma,GES),
@@ -773,6 +779,7 @@ var Disziplinen = [
                 maximaleAngriffe: max(Rang, 8),
                 Überanstrengung: add(6,maximaleAngriffe),
                 KarmaVerbrauch: add(3,mul(3,WiederholungenBisAngriffFehlschlägt)),
+                inherits: DefaultKombo,
                 Angriffe: [
                     {
                         Art: kWsk,
