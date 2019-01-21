@@ -11,10 +11,10 @@ var probe = function (stufe, mindestwurf) {
     //    return div(stufe, mul(2, mindestwurf));
 };
 
-var MaxRundenVorbereitung = 3;
-var kWsk = "kWsk";
-var mWsk = "mWsk";
-var sWsk = "sWsk";
+window.Max_Runden_Vorbereitung = 3;
+window.kWsk = "kWsk";
+window.mWsk = "mWsk";
+window.sWsk = "sWsk";
 
 // hilfsvariablen
 var p = val('p');
@@ -22,77 +22,77 @@ var r = val('r');
 var k = val('k');
 
 // Werte
-var GES = val("GES");
-var STÄ = val("STÄ");
-var WAH = val("WAH");
-var WIL = val("WIL");
-var Rang = val("Rang");
-var Waffe = val("Waffe");
-var GrundKarma = val("GrundKarma");
-var Karma = val("Karma");
-var KarmaVerbrauch = val("KarmaVerbrauch");
-var Ini = val("Ini");
-var Kreis = val("Kreis");
-var KomboKreis = val("KomboKreis");
-var GegnerIni = val("GegnerIni");
-var Art = val("Art");
-var Stufe = val("Stufe");
-var Schaden = val("Schaden");
-var Treffer = val("Treffer");
-var Wiederholungen = val("Wiederholungen");
-var Überanstrengung = val("Überanstrengung");
-var GegnerWsk = property(val("GegnerWsk"), Art);
-var GegnerMwsk = property(val("GegnerWsk"), mWsk);
-var GegnerRüstung = property(val("GegnerRüstung"), Art);
-var MixturKreis = val("MixturKreis");
-var Fäden = val("Fäden");
-var MinFäden = val("MinFäden");
-var ExtraFäden = val("ExtraFäden");
-var Webschwierigkeit = val("Webschwierigkeit");
+window.GES = val("GES");
+window.STÄ = val("STÄ");
+window.WAH = val("WAH");
+window.WIL = val("WIL");
+window.Rang = val("Rang");
+window.Waffe = val("Waffe");
+window.GrundKarma = mul(4,later('Karma_Einsatz'));
+window.Karma = val("Karma");
+window.KarmaVerbrauch = mul(val("KarmaVerbrauch"),later('Karma_Einsatz'));
+window.Ini = val("Ini");
+window.Kreis = val("Kreis");
+window.KomboKreis = val("KomboKreis");
+window.GegnerIni = val("GegnerIni");
+window.Art = val("Art");
+window.Stufe = val("Stufe");
+window.Schaden = val("Schaden");
+window.Treffer = val("Treffer");
+window.Wiederholungen = val("Wiederholungen");
+window.Überanstrengung = val("Überanstrengung");
+window.GegnerWsk = property(val("GegnerWsk"), Art);
+window.GegnerMwsk = property(val("GegnerWsk"), mWsk);
+window.GegnerRüstung = property(val("GegnerRüstung"), Art);
+window.MixturKreis = val("MixturKreis");
+window.Fäden = val("Fäden");
+window.MinFäden = val("MinFäden");
+window.ExtraFäden = val("ExtraFäden");
+window.Webschwierigkeit = val("Webschwierigkeit");
 
-var RundenWirkung = val("RundenWirkung");
-var maximaleAngriffe = val("maximaleAngriffe");
-var Min2xIni = probe(Ini, mul(2, GegnerIni));
-var MinIni = probe(Ini, GegnerIni);
-var MinWsk = probe(Stufe, GegnerWsk);
-var MinFadenweben = min(1, probe(add(WAH, Rang, Karma), Webschwierigkeit));
-var MinZauberWsk = mul(MinFadenweben, probe(Stufe, GegnerWsk));
-var KampfsinnRang = mul(probe(add(Rang, WAH), GegnerMwsk), MinIni, Rang);
-var KampfsinnKarmaRang = mul(probe(add(Rang, WAH, Karma), GegnerMwsk), MinIni, Rang);
-var Fehlschlag = val("Fehlschlag");
-var AlchmFehlschlag = mul(0.05, sub(3, min(3, sub(Kreis, MixturKreis))));
-var AlchmTreffer = sub(1, AlchmFehlschlag);
-var AnzahlRundenAngriffAlsAktion = val("AnzahlRundenAngriffAlsAktion");
-var FolgeRundenAngriffAutomatisch = val("FolgeRundenAngriffAutomatisch");
-var AngriffNurErsteRunde = val("AngriffNurErsteRunde");
+window.RundenWirkung = val("RundenWirkung");
+window.maximaleAngriffe = val("maximaleAngriffe");
+window.Min2xIni = probe(Ini, mul(2, GegnerIni));
+window.MinIni = probe(Ini, GegnerIni);
+window.MinWsk = probe(Stufe, GegnerWsk);
+window.MinFadenweben = min(1, probe(add(WAH, Rang, Karma), Webschwierigkeit));
+window.MinZauberWsk = mul(MinFadenweben, probe(Stufe, GegnerWsk));
+window.KampfsinnRang = mul(probe(add(Rang, WAH), GegnerMwsk), MinIni, Rang);
+window.KampfsinnKarmaRang = mul(probe(add(Rang, WAH, Karma), GegnerMwsk), MinIni, Rang);
+window.Fehlschlag = val("Fehlschlag");
+window.AlchmFehlschlag = mul(0.05, sub(3, min(3, sub(Kreis, MixturKreis))));
+window.AlchmTreffer = sub(1, AlchmFehlschlag);
+window.AnzahlRundenAngriffAlsAktion = val("AnzahlRundenAngriffAlsAktion");
+window.FolgeRundenAngriffAutomatisch = val("FolgeRundenAngriffAutomatisch");
+window.AngriffNurErsteRunde = val("AngriffNurErsteRunde");
 
 
 // RundenVorlaufMin: Minimale Anzahl Runden, die die Kombo an Vorlauf braucht
-var RundenVorlaufMin = val("RundenVorlaufMin");
+window.RundenVorlaufMin = val("RundenVorlaufMin");
 
 // RundenVorlaufMax: Maximale Anzahl Runden, die die Kombo an Vorlauf braucht
-var RundenVorlaufMax = val("RundenVorlaufMax");
+window.RundenVorlaufMax = val("RundenVorlaufMax");
 
 // RundenVorlauf: Anzahl Runden, die die Kombo an Vorlauf tatsächlich erhält
-var RundenVorlauf = val("RundenVorlauf");
+window.RundenVorlauf = val("RundenVorlauf");
 
 // BenötigteRundenImKampf: Anzahl Runden, die die Kombo im Kampf insgesamt an Vorlauf braucht und wirkt
-var BenötigteRundenImKampf = add(RundenVorlauf,max(RundenWirkung,AnzahlRundenAngriffAlsAktion));
+window.BenötigteRundenImKampf = add(RundenVorlauf,max(RundenWirkung,AnzahlRundenAngriffAlsAktion));
 
 
 // kann maximaleAngriffe Angriffe ausführen, bricht allerdings ab, sobald ein Angriff fehlschlägt
 // Summenformel für n Treffer q als Wahrscheinlichkeit [0,1[ (ist für 1 nicht definiert, daher max 1-e) :
 // q^1+q^2+...+q^n = q-q^(n+1) / (1-q)
 var q = min(0.999999999, MinWsk);
-var WiederholungenBisAngriffFehlschlägt = div(div(sub(q, pow(q, add(maximaleAngriffe, 1))), sub(1, q)), Treffer);
+window.WiederholungenBisAngriffFehlschlägt = div(div(sub(q, pow(q, add(maximaleAngriffe, 1))), sub(1, q)), Treffer);
 
-var Erfolge = (stufe,mindestwurf) => integrate(1,20,i=>probe(stufe,add(mindestwurf,5*i)));
+window.Erfolge = (stufe,mindestwurf) => integrate(1,20,i=>probe(stufe,add(mindestwurf,5*i)));
 
-var TrefferErfolge = Erfolge(Stufe,GegnerWsk);
+window.TrefferErfolge = Erfolge(Stufe,GegnerWsk);
 
-var SchadenMitErfolgen = val('SchadenMitErfolgen');
+window.SchadenMitErfolgen = val('SchadenMitErfolgen');
 
-var StandardSchadenEinzelrunde =
+window.StandardSchadenEinzelrunde =
     sub(
         mul(Wiederholungen,
             min(1, Treffer),
@@ -109,25 +109,25 @@ var StandardSchadenEinzelrunde =
         mul(Fehlschlag, Schaden)
     );
 
-var StandardSchadenProRunde = div( StandardSchadenEinzelrunde, BenötigteRundenImKampf );
+window.StandardSchadenProRunde = div( StandardSchadenEinzelrunde, BenötigteRundenImKampf );
 
-var SchadenProRundeSum = sub(sumOver("Angriffe.SchadenProRunde"), add(Überanstrengung));
-var SchadenEinzelrundeSum = sub(sumOver("Angriffe.SchadenEinzelrunde"), add(Überanstrengung));
+window.SchadenProRundeSum = sub(sumOver("Angriffe.SchadenProRunde"), add(Überanstrengung));
+window.SchadenEinzelrundeSum = sub(sumOver("Angriffe.SchadenEinzelrunde"), add(Überanstrengung));
 
-var WillensstärkeKreis = val('WillensstärkeKreis');
-var Willensstärke = add(WIL,Rang,Karma);
-var FixKarmaVerbrauch = val('FixKarmaVerbrauch');
+window.WillensstärkeKreis = val('WillensstärkeKreis');
+window.Willensstärke = add(WIL,Rang,Karma);
+window.FixKarmaVerbrauch = val('FixKarmaVerbrauch');
 
 var ifKreis = (kreis,thenPart,elsePart) => (x) => funValue(kreis,x)<=x.Kreis ? thenPart : elsePart;
 
-var WILS = val('WILS');
+window.WILS = val('WILS');
 
 // TODO die Fäden müssen ja auch geschafft werden.... also Webschwierigkeit einbeziehen!
-var ErweiterteFäden = val('ErweiterteFäden');
-var StandardFäden = add(RundenVorlauf,ErweiterteFäden);
-var ExtraFäden = max(0,sub(Fäden,MinFäden));
-var StandardFädenVorlaufMin = max(0,sub(MinFäden,ErweiterteFäden));
-var StandardFädenVorlaufMax = 20;
+window.ErweiterteFäden = val('ErweiterteFäden');
+window.StandardFäden = add(RundenVorlauf,ErweiterteFäden);
+window.ExtraFäden = max(0,sub(Fäden,MinFäden));
+window.StandardFädenVorlaufMin = max(0,sub(MinFäden,ErweiterteFäden));
+window.StandardFädenVorlaufMax = 20;
 
 var DefaultCharacter = {
     ErweiterteFäden: 0,
@@ -173,7 +173,7 @@ var DefaultAngriff = {
     SchadenEinzelrunde: StandardSchadenEinzelrunde,
     SchadenProRunde: StandardSchadenProRunde,
     Erfolge: TrefferErfolge,
-    SchadenMitErfolgen: add( Schaden, mul(TrefferErfolge,2) ),
+    SchadenMitErfolgen: add( Schaden, mul(Erfolge,2) ),
     Wiederholungen: 1,
     Fehlschlag: 0,
     AnzahlRundenAngriffAlsAktion: 1,
@@ -236,8 +236,124 @@ var Disziplinen = [
                     {
                         Art: kWsk,
                         Stufe: add(WAH, Rang, Karma),
-                        // 2 Runden -2 auf Wsk => als 2 zus. Schaden verrechnet
-                        Schaden: add(WILS, 3, mul(ExtraFäden,2), 2),
+                        // 1 Runden -2 auf Rüstung => als 0.5 zus. Schaden verrechnet
+                        Schaden: add(WILS, 3, mul(ExtraFäden,2), 0.5),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+
+            {
+                KomboKreis: 3,
+                Kombo: "Blitzschlag",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 7,
+                MinFäden: 1,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        Schaden: add(WILS, 6, mul(ExtraFäden,2)),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 3,
+                Kombo: "Eisbola",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 7,
+                MinFäden: 0,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        Schaden: add(WILS, 2, mul(ExtraFäden,2)),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 4,
+                Kombo: "Schneesturm",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 8,
+                MinFäden: 2,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        Schaden: add(WILS, 2, mul(ExtraFäden,2)),
+                        Treffer: MinZauberWsk,
+                        FolgeRundenAngriffAutomatisch: Rang,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 4,
+                Kombo: "Speer des Feuers",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 8,
+                MinFäden: 1,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        Schaden: add(WILS, 4, mul(ExtraFäden,2), mul(Erfolge,2), 4),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 5,
+                Kombo: "Erdstab + Flammenwaffe",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 9,
+                MinFäden: 1,
+                FixKarmaVerbrauch: 2,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: GES,
+                        Schaden: add(STÄ, 4, 4, mul(ExtraFäden,4)),
+                        Treffer: MinWsk,
+                        Erfolge: add(Erfolge,1),
+                    }
+                ]
+            },
+            {
+                KomboKreis: 5,
+                Kombo: "Erdstab + Speer des Feuers",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 9,
+                MinFäden: 2,
+                FixKarmaVerbrauch: 2,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        Schaden: add(WILS, 4, mul(ExtraFäden,2), mul(Erfolge,2), 4),
+                        Treffer: MinZauberWsk,
+                        Erfolge: add(Erfolge,1),
+                    }
+                ]
+            },
+            {
+                KomboKreis: 5,
+                Kombo: "Feuerball",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 9,
+                MinFäden: 1,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        Schaden: add(WILS, 4, mul(ExtraFäden,2), mul(Erfolge,2)),
                         Treffer: MinZauberWsk,
                     }
                 ]
@@ -372,7 +488,7 @@ var Disziplinen = [
             //     Kombo: "Querschläger",
             //     Ini: GES,
             //     SchadenProRundeSum: SchadenProRundeSum,
-            //     Fäden: min(Rang, evaluate("MaxRundenVorbereitung")),
+            //     Fäden: min(Rang, evaluate("Max_Runden_Vorbereitung")),
             //     Webschwierigkeit: 12,
             //     RundenVorbereitung: Fäden,
             //     Überanstrengung: 0,
@@ -447,7 +563,7 @@ var Disziplinen = [
             //     Kombo: "Querschläger erw. Matrix",
             //     Ini: GES,
             //     SchadenProRundeSum: SchadenProRundeSum,
-            //     Fäden: min(Rang, evaluate("MaxRundenVorbereitung")),
+            //     Fäden: min(Rang, evaluate("Max_Runden_Vorbereitung")),
             //     Webschwierigkeit: 12,
             //     RundenVorbereitung: Fäden,
             //     Überanstrengung: 0,
@@ -651,7 +767,7 @@ var Disziplinen = [
                     {
                         Art: mWsk,
                         Stufe: add(WAH, Rang, Karma),
-                        Schaden: add(WILS, 4, mul(TrefferErfolge,2), mul(ExtraFäden,2)),
+                        Schaden: add(WILS, 4, mul(Erfolge,2), mul(ExtraFäden,2)),
                         Treffer: MinZauberWsk,
                     }
                 ]
@@ -677,7 +793,7 @@ var Disziplinen = [
                 KomboKreis: 2,
                 Kombo: "Nebelgeist",
                 MinFäden: 1,
-                Webschwierigkeit: 5,
+                Webschwierigkeit: 6,
                 FixKarmaVerbrauch: 1,
                 inherits: ZauberKombo,
                 Angriffe: [
@@ -705,7 +821,7 @@ var Disziplinen = [
                         Schaden: add(WILS, 6, mul(ExtraFäden,2), 2),
                         Treffer: MinZauberWsk,
                         SchadenProRunde: StandardSchadenProRunde,
-                        Wiederholungen: min(2,add(1,TrefferErfolge)),
+                        Wiederholungen: min(2,add(1,Erfolge)),
                     }
                 ]
             },

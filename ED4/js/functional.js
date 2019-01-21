@@ -15,7 +15,8 @@ function funValue(fun, x) {
         return 0;
     }
     if (_.isFunction(fun)) {
-        return funValue(fun(x), x);
+        var v = fun(x);
+        return funValue(v, x);
     }
     return fun;
 }
@@ -80,9 +81,9 @@ function val(key) {
     };
 }
 
-function evaluate(js) {
-    return function () {
-        return eval(js);
+function later(key) {
+    return function (x) {
+        return window[key];
     };
 }
 

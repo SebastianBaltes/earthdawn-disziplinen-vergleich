@@ -1,17 +1,19 @@
 "use strict";
 
-var Kampfrunden = 3;
+window.Kampfrunden = 3;
+window.Karma_Einsatz = 1;
 
 $(function () {
-    var Gegner_Delta_Ini = 0;
-    var Gegner_Delta_kWsk = 0;
-    var Gegner_Delta_mWsk = 0;
-    var Gegner_Delta_sWsk = 0;
-    var Gegner_Delta_kRüstung = 0;
-    var Gegner_Delta_mRüstung = 0;
+    window.Gegner_Delta_Ini = 0;
+    window.Gegner_Delta_kWsk = 0;
+    window.Gegner_Delta_mWsk = 0;
+    window.Gegner_Delta_sWsk = 0;
+    window.Gegner_Delta_kRüstung = 0;
+    window.Gegner_Delta_mRüstung = 0;
 
     $('.options').append(Slider("Kampfrunden", 1, 10, 1, refreshResult));
-    $('.options').append(Slider("MaxRundenVorbereitung", 0, 10, 1, refreshResult));
+    $('.options').append(Slider("Max_Runden_Vorbereitung", 0, 10, 1, refreshResult));
+    $('.options').append(Slider("Karma_Einsatz", 0, 1, 0.1, refreshResult));
     $('.options').append(Slider("Gegner_Grundwert", 1, 80, 1, refreshResult));
     $('.options').append(Slider("Gegner_Steigung", 0, 3, 0.1, refreshResult));
     $('.options').append(Slider("Gegner_Steigerungsbasis", 1, 1.66, 0.01, refreshResult));
@@ -83,7 +85,7 @@ $(function () {
                 };
                 d2s.werteProKreis[kreis] = d2s2v;
 
-                for (var rundenVorlauf = 0; rundenVorlauf <= MaxRundenVorbereitung; rundenVorlauf++) {
+                for (var rundenVorlauf = 0; rundenVorlauf <= Max_Runden_Vorbereitung; rundenVorlauf++) {
 
                     var kombosInKreis = _.filter(disziplin.Kombos, function (kombo) {
                         var char = createChar(disziplin, kreis, kombo, rundenVorlauf);
@@ -281,7 +283,7 @@ $(function () {
                         detailTable.col("Summe Schaden / Runde", kombo.get("SchadenProRundeSum"));
                         detailTable.col("Kombo-Ini", kombo.get("Ini"));
                         detailTable.col("ÜA", kombo.get("Überanstrengung"));
-                        detailTable.col("Karma", kombo.get("KarmaVerbrauch"));
+                        detailTable.col("Karma", KarmaVerbrauch(kombo));
                         detailTable.col("Fäden", kombo.get("Fäden"));
                         detailTable.col("Erw-Fäden", kombo.get("ErweiterteFäden"));
                         detailTable.col("WILS", kombo.get("WILS"));

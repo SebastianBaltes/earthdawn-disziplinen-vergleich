@@ -1,9 +1,9 @@
 "use strict";
 
-var Attribute = ["GES","STÄ","ZÄH","WAH","WIL","CHA"];
+window.Attribute = ["GES","STÄ","ZÄH","WAH","WIL","CHA"];
 
 // nicht dieselbe Reihenfolge
-var Attributsstartwerte = [17,16,15,12,11,10];
+window.Attributsstartwerte = [17,16,15,12,11,10];
 
 //0 1 2
 //-----
@@ -43,15 +43,15 @@ var Stufe= function(wert) {
   return Math.floor((wert-1)/3+2);
 };
 
-var Gegner_Grundwert = 1;
-var Gegner_Steigerungsbasis = 1;
-var Gegner_Steigung = 0;
-var Gegner_Delta_Ini = 0;
-var Gegner_Delta_kWsk = 2;
-var Gegner_Delta_mWsk = -1;
-var Gegner_Delta_sWsk = -2;
-var Gegner_Delta_kRüstung = -3;
-var Gegner_Delta_mRüstung = -5;
+window.Gegner_Grundwert = 1;
+window.Gegner_Steigerungsbasis = 1;
+window.Gegner_Steigung = 0;
+window.Gegner_Delta_Ini = 0;
+window.Gegner_Delta_kWsk = 2;
+window.Gegner_Delta_mWsk = -1;
+window.Gegner_Delta_sWsk = -2;
+window.Gegner_Delta_kRüstung = -3;
+window.Gegner_Delta_mRüstung = -5;
 
 
 var Gegner = function(Kreis) {
@@ -69,6 +69,13 @@ var Gegner = function(Kreis) {
     }
   };
 };
+
+function GetPropOrVal(char,propName) {
+    if (char[propName] !== 'undefined') {
+        return char[propName];
+    }
+    return window[propName];
+}
 
 var Character = function(Disziplin,Kreis,RundenVorlauf) {
   var t = _.extend({},Disziplin);
@@ -92,7 +99,7 @@ var Character = function(Disziplin,Kreis,RundenVorlauf) {
   t.GegnerRüstung[kWsk] = gegner.Rüstung.kWsk;
   t.GegnerRüstung[mWsk] = gegner.Rüstung.mWsk;
   t.get = function get(propName) {
-    return funValue(this[propName],this);
+    return funValue(GetPropOrVal(this,propName),this);
   };
   return t;
 };

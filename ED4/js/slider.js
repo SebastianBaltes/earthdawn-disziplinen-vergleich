@@ -12,10 +12,10 @@ var Slider = function(varName,min,max,step,onChange) {
     onChangeDebounced();
   });
   function get() {
-    return eval(varName);
+    return parseFloat(window[varName]);
   };
   function set(val) {
-    eval(varName+'='+val);
+      window[varName]=parseFloat(val);
   };
   return div;
 };
