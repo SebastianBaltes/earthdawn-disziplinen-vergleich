@@ -60,7 +60,7 @@ $(function () {
             });
         }));
 
-        _(Disziplinen).each(function (disziplin) {
+        Disziplinen.forEach(function (disziplin) {
             var d2s = {
                 Name: disziplin.Name,
                 Color: disziplin.Color,
@@ -110,21 +110,23 @@ $(function () {
                 }
 
                 // 1. Runde
-                _.chain(d2s2v.ersteRunde.list).sortBy(function (char) {
+                _.sortBy(d2s2v.ersteRunde.list,function (char) {
                     return -char.get("SchadenEinzelrundeSum");
-                }).take(1).each(function (char) {
+                }).find(function (char) {
                     char.Strategie = "1. Runde";
                     d2s2v.ersteRunde.kombo = char;
                     d2s2v.ersteRunde.schaden = char.get("SchadenEinzelrundeSum");
+                    return true;
                 });
 
                 // Folgerunden
-                _.chain(d2s2v.folgeRunden.list).sortBy(function (char) {
+                _.sortBy(d2s2v.folgeRunden.list,function (char) {
                     return -char.get("SchadenProRundeSum");
-                }).take(1).each(function (char) {
+                }).find(function (char) {
                     char.Strategie = "Folgerunden";
                     d2s2v.folgeRunden.kombo = char;
                     d2s2v.folgeRunden.schaden = char.get("SchadenProRundeSum");
+                    return true;
                 });
 
                 d2s2v.schaden = d2s2v.ersteRunde.schaden + d2s2v.folgeRunden.schaden * (Kampfrunden - 1);
@@ -144,18 +146,18 @@ $(function () {
 
 //      line.splice(0, 1);
 //      line.splice(line.length-1, 1);
-//      var gestutztesMittel = _.foldl(line, function(a,b){return a+b;}, 0) / line.length;
+//      var gestutztesMittel = _.reduce(line, function(a,b){return a+b;}, 0) / line.length;
 
 //      var median = line[Math.round(line.length/2)];
 
-                var geometrischesMittel = Math.pow(_.foldl(line, function (a, b) {
+                var geometrischesMittel = Math.pow(_.reduce(line, function (a, b) {
                     return a * b;
                 }, 1), 1 / line.length);
                 if (_.isNaN(geometrischesMittel) || geometrischesMittel == 0) {
                     // Fallback Median
                     geometrischesMittel = line[Math.round(line.length / 2)];
                 }
-//      var arithmetischesMittel = _.foldl(line, function(a,b){return a+b;}, 0) / line.length;
+//      var arithmetischesMittel = _.reduce(line, function(a,b){return a+b;}, 0) / line.length;
 
                 disziplin2Schaden[1].werteProKreis[kreis] = {kreis, schaden: geometrischesMittel, ersteRunde: null, folgeRunden: null};
             }

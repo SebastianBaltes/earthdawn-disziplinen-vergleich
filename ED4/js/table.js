@@ -24,7 +24,7 @@ var Table = function(columns,defaultFixed) {
   function col(name,value) {
     var fixedDigits = _.isUndefined(fixedColumns[name])?defaultFixed:fixedColumns[name];
     row[name]=(typeof value==='number')?value.toFixed(fixedDigits).replace(".",","):value;
-    if (!_.contains(columns,name)) {
+    if (!_.includes(columns,name)) {
       columns.push(name);
     }
   }
@@ -37,15 +37,15 @@ var Table = function(columns,defaultFixed) {
     var table = $("<table border='1' style='border-collapse:collapse;'><thead><tr/></thead><tbody/></table>");
     var theadTr = $('thead tr',table);
     var tbody = $('tbody',table);
-    _(columns).each(function(col){
+    columns.forEach(function(col){
       var th = $("<th>");
       th.text(col);
       theadTr.append(th);
     });
-    _(rows).each(function(row){
+    rows.forEach(function(row){
       var tr = $("<tr>");
       tbody.append(tr);
-      _(columns).each(function(col){
+      columns.forEach(function(col){
         var td = $("<td>");
         td.text(row[col]);
         tr.append(td);

@@ -1,30 +1,73 @@
 //"use strict";
 
+function assertNumbers(numbers) {
+    numbers.forEach(function (n) {
+        if (!(n==null || _.isNumber(n) || _.isFunction(n))) {
+            debugger;
+        }
+    });
+    return true;
+}
+
+let ß_depth = 0;
+function ß(name,f) {
+    return f;
+    // return function (x) {
+    //     const tab = _.repeat(' ',ß_depth);
+    //     console.log(tab+'>',name);
+    //     ß_depth++;
+    //     const r = f(x);
+    //     ß_depth--;
+    //     console.log(tab+'<',name,'=',r);
+    //     return r;
+    // }
+}
+
+function val(key) {
+    return function (x) {
+        // const tab = _.repeat(' ',ß_depth);
+        const value = x[key];
+        // console.log(tab+' ',key,'=',value);
+        return value;
+    };
+}
+
 function funValues(funs, x) {
     return _.map(funs, function (f) {
         return funValue(f, x);
     });
 }
 
+let $_depth = 0;
 function funValue(fun, x) {
-    if (fun==null) {
-        return 0;
-    }
-    if (Number.isNaN(fun)) {
-        console.warn(fun);
-        return 0;
-    }
-    if (_.isFunction(fun)) {
+    if ($_depth++>100) {
+        debugger;
         var v = fun(x);
-        return funValue(v, x);
+        var fv = funValue(v, x);
     }
-    return fun;
+    try {
+        if (fun==null) {
+            return 0;
+        }
+        if (Number.isNaN(fun)) {
+            console.warn(fun);
+            return 0;
+        }
+        if (_.isFunction(fun)) {
+            var v = fun(x);
+            var fv = funValue(v, x);
+            return fv;
+        }
+        return fun;
+    } finally {
+        $_depth--;
+    }
 }
 
 function add() {
     var funs = arguments;
     return function (x) {
-        return _.foldl(funValues(funs, x), function (memo, num) {
+        return _.reduce(funValues(funs, x), function (memo, num) {
             return memo + num;
         }, 0);
     };
@@ -33,7 +76,7 @@ function add() {
 function mul() {
     var funs = arguments;
     return function (x) {
-        return _.foldl(funValues(funs, x), function (memo, num) {
+        return _.reduce(funValues(funs, x), function (memo, num) {
             return memo * num;
         }, 1);
     };
@@ -75,12 +118,6 @@ function pow(a, b) {
     };
 }
 
-function val(key) {
-    return function (x) {
-        return x[key];
-    };
-}
-
 function later(key) {
     return function (x) {
         return window[key];
@@ -89,12 +126,23 @@ function later(key) {
 
 function property(obj, key) {
     return function (x) {
-        return funValue(obj, x)[funValue(key, x)];
+        // const tab = _.repeat(' ',ß_depth);
+        const o = funValue(obj, x);
+        const k = funValue(key, x);
+        // if (!_.isObject(o)) {
+        //     debugger;
+        // }
+        // if (!_.isString(k)) {
+        //     debugger;
+        // }
+        const value = o[k];
+        // console.log(tab+' ',k,'=',value);
+        return value;
     };
 }
 
 function navigate(x, path) {
-    var xs = _.foldl(_.initial(path.split(".")), function (list, prop) {
+    var xs = _.reduce(_.initial(path.split(".")), function (list, prop) {
 
         var subList = _.flatten(_.map(list, function (o) {
             var v = o[funValue(prop, o)];
@@ -118,7 +166,7 @@ function navigate(x, path) {
 function sumOver(key) {
     return function (x) {
         var list = navigate(x, key);
-        return _.foldl(list, function (memo, num) {
+        return _.reduce(list, function (memo, num) {
             return memo + num;
         }, 0);
     };
