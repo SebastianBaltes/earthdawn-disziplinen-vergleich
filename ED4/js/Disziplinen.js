@@ -1,16 +1,16 @@
 "use strict";
 
-var probe = function (stufe, mindestwurf) {
-    assertNumbers([stufe,mindestwurf]);
-    //  return function(x) {
-    //    var v = funValue(stufe,x);
-    //    return (1+v-Math.floor(v)) * Dices(Stufen[Math.floor(v)]).probabilityToReach(funValue(mindestwurf,x));
-    //  };
-    return function (x) {
-        return probability(funValue(stufe, x), funValue(mindestwurf, x));
+var probeFunction = function (f) {
+    return function(stufe,mindestwurf) {
+        assertNumbers([stufe,mindestwurf]);
+        return function (x) {
+            return f(funValue(stufe, x), funValue(mindestwurf, x));
+        };
     };
-    //    return div(stufe, mul(2, mindestwurf));
 };
+
+var probe = probeFunction(probability);
+var erfolge = probeFunction(successes);
 
 window.Max_Runden_Vorbereitung = 3;
 window.kWsk = "kWsk";
@@ -43,6 +43,7 @@ window.Treffer = val("Treffer");
 window.Wiederholungen = val("Wiederholungen");
 window.Überanstrengung = val("Überanstrengung");
 window.GegnerWsk = ß('GegnerWsk',property(val("GegnerWsk"), Art));
+window.GegnerKwsk = ß('GegnerKwsk',property(val("GegnerWsk"), kWsk));
 window.GegnerMwsk = ß('GegnerMwsk',property(val("GegnerWsk"), mWsk));
 window.GegnerRüstung = ß('GegnerRüstung',property(val("GegnerRüstung"), Art));
 window.MixturKreis = val("MixturKreis");
@@ -54,7 +55,6 @@ window.Webschwierigkeit = val("Webschwierigkeit");
 
 window.RundenWirkung = val("RundenWirkung");
 window.maximaleAngriffe = val("maximaleAngriffe");
-window.Min2xIni = ß('Min2xIni',probe(Ini, mul(2, GegnerIni)));
 window.MinIni = ß('MinIni',probe(Ini, GegnerIni));
 window.MinWsk = ß('MinWsk',probe(Stufe, GegnerWsk));
 window.MinFadenweben = ß('MinFadenweben',min(1, probe(add(WAH, Rang, Karma), Webschwierigkeit)));
@@ -87,8 +87,6 @@ window.BenötigteRundenImKampf = ß('BenötigteRundenImKampf',add(RundenVorlauf,
 // q^1+q^2+...+q^n = q-q^(n+1) / (1-q)
 var q = min(0.999999999, MinWsk);
 window.WiederholungenBisAngriffFehlschlägt = ß('WiederholungenBisAngriffFehlschlägt',div(div(sub(q, pow(q, add(maximaleAngriffe, 1))), sub(1, q)), Treffer));
-
-window.erfolge = (stufe,mindestwurf) => ß('erfolge',assertNumbers([stufe,mindestwurf]) && integrate(1,20,i=>probe(stufe,add(mindestwurf,5*i))));
 
 window.TrefferErfolge = ß('TrefferErfolge',erfolge(Stufe,GegnerWsk));
 
@@ -130,6 +128,16 @@ window.StandardFäden = ß('StandardFäden',add(RundenVorlauf,ErweiterteFäden))
 window.ExtraFäden = ß('ExtraFäden',max(0,sub(Fäden,MinFäden)));
 window.StandardFädenVorlaufMin = ß('StandardFädenVorlaufMin',max(0,sub(MinFäden,ErweiterteFäden)));
 window.StandardFädenVorlaufMax = 20;
+window.IniErfolge3 = ß('IniErfolge3',max(0,add(erfolge(Ini, GegnerIni),-2)));
+window.LufttzanzTreffer = ß('LufttzanzTreffer',mul(IniErfolge3,MinWsk));
+window.Nahkampfwaffen = ß('Nahkampfwaffen',add(GES, Rang, Karma));
+window.ManövrierenErsterAngriffBonus = ß('ManövrierenErsterAngriffBonus',mul(erfolge(add(Rang,GES,Karma),GegnerKwsk),2));
+window.KampfsinnErsterAngriffBonus = ß('KampfsinnErsterAngriffBonus',mul(probe(Ini,GegnerIni),erfolge(add(Rang,WAH,Karma),GegnerMwsk),2));
+window.Tigersprung = ß('Tigersprung',add(Rang, Karma));
+window.Lufttanz = ß('Lufttanz',add(Rang, Karma));
+window.Schildschlag = ß('Schildschlag',add(STÄ, Rang, Karma));
+window.Waffenschaden = ß('Waffenschaden',add(STÄ, Waffe));
+window.Hammerschlag = ß('Hammerschlag',add(Rang, Karma));
 
 var DefaultCharacter = {
     ErweiterteFäden: 0,
@@ -189,6 +197,410 @@ var Disziplinen = [
     // so einfach auf "Schaden", den hier relevanten Vergleichswert, runterrechnen kann (für einen echten Kampf
     // ist gerade Immobilität natürlich extrem mächtig). Auch Mali auf den Gegner wie durch Verspotten werden
     // nicht voll angerechnet.
+
+    // ///////////////////////////////////////////////////////////////////////
+    //
+    {
+        Name: "Krieger",
+        Color: "rgb(0, 0, 0)",
+        Attribute: [
+            "GES", "STÄ", "WAH"
+        ],
+        Waffe: 8,
+        inherits: DefaultCharacter,
+
+        //                   Kreis ÜA Karma Wirkung
+        // Nahkampfwaffen    1     0  1     Rang+GES>kWsk
+        // Manövrieren       1     1  1     Rang+GES>kWsk pro Erfolg +2 erste Angriff
+        // Kampfsinn         1     1  1     Rang+WAH>mWsk und Ini größer, pro Erfolg +2 erste Angriff
+        // Tigersprung       1     1  1     +Ini
+        // Schildschlag      1     1  1     Rang+STÄ
+        // Lufttanz          3     2  1     +Ini, +2 Angriff bei >3 Ini-Erfolgen
+        // Kampfriten        5     0  0     -1 ÜA
+        // Schadenskarma     5     0  1     Karma auf Schaden
+        // Hammerschlag      7     1  1     Rang auf Schaden
+        // Zweiter Angriff   8     2  1     Rang+GES>kWsk
+
+        Kombos: [
+            {
+                KomboKreis: 1,
+                inherits: DefaultKombo,
+                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung",
+                Ini: add(GES, Tigersprung),
+                Überanstrengung: 3,
+                KarmaVerbrauch: 4,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
+                        Schaden: Waffenschaden,
+                        Treffer: MinWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 1,
+                inherits: DefaultKombo,
+                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Schildschlag",
+                Ini: add(GES, Tigersprung),
+                Überanstrengung: 4,
+                KarmaVerbrauch: 5,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
+                        Schaden: Schildschlag,
+                        Treffer: MinWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 3,
+                inherits: DefaultKombo,
+                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Lufttanz",
+                Ini: add(GES, Tigersprung, Lufttanz),
+                Überanstrengung: 5,
+                KarmaVerbrauch: 5,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
+                        Schaden: Waffenschaden,
+                        Treffer: MinWsk,
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen),
+                        Schaden: Waffenschaden,
+                        Treffer: LufttzanzTreffer,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 3,
+                inherits: DefaultKombo,
+                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Schildschlag + Lufttanz",
+                Ini: add(GES, Tigersprung, Lufttanz),
+                Überanstrengung: 7,
+                KarmaVerbrauch: 7,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
+                        Schaden: Schildschlag,
+                        Treffer: MinWsk,
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen),
+                        Schaden: Schildschlag,
+                        Treffer: LufttzanzTreffer,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 5,
+                inherits: DefaultKombo,
+                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Lufttanz + Kampfriten + Schadenskarma",
+                Ini: add(GES, Tigersprung, Lufttanz),
+                Überanstrengung: 4,
+                KarmaVerbrauch: 7,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
+                        Schaden: add(Waffenschaden, Karma),
+                        Treffer: MinWsk,
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen),
+                        Schaden: add(Waffenschaden, Karma),
+                        Treffer: LufttzanzTreffer,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 5,
+                inherits: DefaultKombo,
+                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Schildschlag + Lufttanz + Kampfriten + Schadenskarma",
+                Ini: add(GES, Tigersprung, Lufttanz),
+                Überanstrengung: 6,
+                KarmaVerbrauch: 9,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
+                        Schaden: add(Schildschlag, Karma),
+                        Treffer: MinWsk,
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen),
+                        Schaden: add(Schildschlag, Karma),
+                        Treffer: LufttzanzTreffer,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 7,
+                inherits: DefaultKombo,
+                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Lufttanz + Kampfriten + Schadenskarma + Hammerschlag",
+                Ini: add(GES, Tigersprung, Lufttanz),
+                Überanstrengung: 5,
+                KarmaVerbrauch: 8,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
+                        Schaden: add(Waffenschaden, Karma, Hammerschlag),
+                        Treffer: MinWsk,
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen),
+                        Schaden: add(Waffenschaden, Karma, Hammerschlag),
+                        Treffer: LufttzanzTreffer,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 8,
+                inherits: DefaultKombo,
+                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Lufttanz + Kampfriten + Schadenskarma + Hammerschlag + Zweiter Angriff",
+                Ini: add(GES, Tigersprung, Lufttanz),
+                Überanstrengung: 7,
+                KarmaVerbrauch: 9,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
+                        Schaden: add(Waffenschaden, Karma, Hammerschlag),
+                        Treffer: MinWsk,
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen),
+                        Schaden: add(Waffenschaden, Karma, Hammerschlag),
+                        Treffer: MinWsk,
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen),
+                        Schaden: add(Waffenschaden, Karma, Hammerschlag),
+                        Treffer: LufttzanzTreffer,
+                    }
+                ]
+            },
+        ]
+    },
+
+    // ///////////////////////////////////////////////////////////////////////
+    //
+
+    {
+        Name: "Magier",
+        Color: "rgb(90, 243, 243)",
+        Attribute: [
+            "WAH", "WIL"
+        ],
+        inherits: DefaultZauberer,
+        // Talente:
+
+        // Spruchzauberei (1) 0Ü
+        // Erweiterte Matrix (5) -1 Faden
+        // Willenstärke (6) 1Ü
+
+        Kombos: [
+            {
+                KomboKreis: 1,
+                Kombo: "Eiserne Hand + Waffe",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 5,
+                MinFäden: 0,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: GES,
+                        Schaden: add(STÄ, Waffe, 3, mul(ExtraFäden,2)),
+                        Treffer: MinWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 1,
+                Kombo: "Flammenblitz",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 5,
+                MinFäden: 0,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        Schaden: add(WILS, 5, mul(ExtraFäden,2)),
+                        Treffer: MinZauberWsk,
+                        FolgeRundenAngriffAutomatisch: 1,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 1,
+                Kombo: "Mentaler Dolch",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 5,
+                MinFäden: 0,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        // 1 Runden -2 auf Rüstung => als 0.5 zus. Schaden verrechnet
+                        Schaden: add(WILS, 2, mul(ExtraFäden,2), mul(Erfolge,2), 0.5),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 2,
+                Kombo: "Vernichtender Wille",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 6,
+                MinFäden: 1,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        // 1 Runden -2 auf Rüstung => als 0.5 zus. Schaden verrechnet
+                        Schaden: add(WILS, 3, mul(ExtraFäden,2), 0.5),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 3,
+                Kombo: "Astralvisier + Mentaler Dolch",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 7,
+                MinFäden: 0,
+                FixKarmaVerbrauch: 1,
+                RundenVorlaufMin: 1,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, 2, Karma),
+                        // 1 Runden -2 auf Rüstung => als 0.5 zus. Schaden verrechnet
+                        Schaden: add(WILS, 2, mul(ExtraFäden,2), mul(Erfolge,2), 0.5, 2),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 3,
+                Kombo: "Berührung des Gauklers",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 8,
+                MinFäden: 2,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        Schaden: add(WILS, 6, mul(ExtraFäden,2)),
+                        Treffer: MinZauberWsk,
+                        AnzahlRundenAngriffAlsAktion: add(Rang,1),
+                    }
+                ]
+            },
+            {
+                KomboKreis: 5,
+                Kombo: "Mystischer Schock",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 9,
+                MinFäden: 2,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        Schaden: add(WILS, 4, mul(ExtraFäden,2), mul(Erfolge,2)),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 6,
+                Kombo: "Zerschmettern",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 10,
+                MinFäden: 3,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        // -4 auf Rüstung => als 2 zus. Schaden verrechnet
+                        Schaden: add(WILS, 7, mul(ExtraFäden,2), mul(Erfolge,0.5), 2),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 8,
+                Kombo: "Astrale Katastrophe",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 12,
+                MinFäden: 2,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: mWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        // -2 auf Aktionsproben => als 1 zus. Schaden verrechnet
+                        Schaden: add(WILS, 5, mul(ExtraFäden,2), mul(Erfolge,2), 1),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 8,
+                Kombo: "Astralvisier + Astrale Katastrophe",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 12,
+                MinFäden: 3,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: mWsk,
+                        Stufe: add(WAH, Rang, 2, Karma),
+                        // -2 auf Aktionsproben => als 1 zus. Schaden verrechnet
+                        Schaden: add(WILS, 5, mul(ExtraFäden,2), mul(Erfolge,2), 1, 2),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 8,
+                Kombo: "Astralvisier + Zerquetschen",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 12,
+                MinFäden: 3,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, 2, Karma),
+                        Schaden: add(WILS, 3, mul(ExtraFäden,2), 2),
+                        Treffer: MinZauberWsk,
+                        FolgeRundenAngriffAutomatisch: Rang,
+                    }
+                ]
+            },
+        ]
+    },
+
 
     // ///////////////////////////////////////////////////////////////////////
     {
@@ -345,289 +757,59 @@ var Disziplinen = [
                 ]
             },
             {
-                KomboKreis: 5,
-                Kombo: "Erdstab + Feuerball",
+                KomboKreis: 6,
+                Kombo: "Erdstab + Feuergewebe + Steinregen",
                 inherits: ZauberKombo,
-                Webschwierigkeit: 9,
-                MinFäden: 1,
-                FixKarmaVerbrauch: 1,
+                Webschwierigkeit: 10,
+                MinFäden: 4,
+                FixKarmaVerbrauch: 3,
                 Angriffe: [
                     {
                         Art: kWsk,
                         Stufe: add(WAH, Rang, Karma),
-                        Schaden: add(WILS, 4, mul(ExtraFäden,2), mul(Erfolge,2)),
+                        Schaden: add(WILS, 5, WILS, 2, mul(ExtraFäden,2)),
                         Treffer: MinZauberWsk,
                         Erfolge: add(TrefferErfolge,1),
+                        FolgeRundenAngriffAutomatisch: Rang,
                     }
                 ]
             },
-            // {
-            //     KomboKreis: 6,
-            //     Kombo: "Erdstab + Umhang des Feuerplünderers",
-            //     inherits: ZauberKombo,
-            //     Webschwierigkeit: 10,
-            //     MinFäden: 2,
-            //     FixKarmaVerbrauch: 1,
-            //     Angriffe: [
-            //         {
-            //             Art: kWsk,
-            //             Stufe: add(WAH, Rang, Karma),
-            //             Schaden: add(WILS, 5, mul(ExtraFäden,2)),
-            //             Treffer: MinZauberWsk,
-            //             Erfolge: add(TrefferErfolge,1),
-            //         }
-            //     ]
-            // },
-
-            // {
-            //     Karma: GrundKarma,
-            //     KomboKreis: 1,
-            //     Kombo: "Erdpfeile",
-            //     Ini: GES,
-            //     SchadenProRundeSum: SchadenProRundeSum,
-            //     Fäden: 1,
-            //     Webschwierigkeit: 5,
-            //     RundenVorbereitung: Fäden,
-            //     Überanstrengung: 0,
-            //     KarmaVerbrauch: 2,
-            //     Angriffe: [
-            //         {
-            //             Art: mWsk,
-            //             Stufe: add(WAH, Rang, Karma),
-            //             Schaden: add(WIL, 6),
-            //             Treffer: MinZauberWsk,
-            //             SchadenProRunde: StandardSchadenProRunde,
-            //             Wiederholungen: 1,
-            //             Fehlschlag: 0,
-            //             AnzahlRundenAngriffAlsAktion: 1,
-            //             FolgeRundenAngriffAutomatisch: 0,
-            //         }
-            //     ]
-            // }, {
-            //     Karma: GrundKarma,
-            //     KomboKreis: 3,
-            //     Kombo: "Eisbola",
-            //     Ini: GES,
-            //     SchadenProRundeSum: SchadenProRundeSum,
-            //     Fäden: 0,
-            //     Webschwierigkeit: 0,
-            //     RundenVorbereitung: Fäden,
-            //     Überanstrengung: 0,
-            //     KarmaVerbrauch: 1,
-            //     Angriffe: [
-            //         {
-            //             Art: mWsk,
-            //             Stufe: add(WAH, Rang, Karma),
-            //             Schaden: add(WIL, 5),
-            //             Treffer: MinZauberWsk,
-            //             SchadenProRunde: StandardSchadenProRunde,
-            //             Wiederholungen: 1,
-            //             Fehlschlag: 0,
-            //             AnzahlRundenAngriffAlsAktion: 1,
-            //             FolgeRundenAngriffAutomatisch: 0,
-            //         }
-            //     ]
-            // },
-            // // Willensstärke ab Kreis 5
-            // {
-            //     Karma: GrundKarma,
-            //     KomboKreis: 5,
-            //     Kombo: "Erdstab",
-            //     Ini: GES,
-            //     SchadenProRundeSum: SchadenProRundeSum,
-            //     Fäden: 1,
-            //     Webschwierigkeit: 11,
-            //     RundenVorbereitung: Fäden,
-            //     Überanstrengung: 0,
-            //     KarmaVerbrauch: 1,
-            //     Angriffe: [
-            //         {
-            //             // Angriff ist körperlich über den Stab mit Geschicklichkeit, für Rang Runden möglich
-            //             Art: kWsk,
-            //             Stufe: GES,
-            //             Schaden: add(STÄ, 10),
-            //             Treffer: MinZauberWsk,
-            //             SchadenProRunde: StandardSchadenProRunde,
-            //             Wiederholungen: 1,
-            //             Fehlschlag: 0,
-            //             AnzahlRundenAngriffAlsAktion: Rang,
-            //             FolgeRundenAngriffAutomatisch: 0,
-            //         }
-            //     ]
-            // }, {
-            //     Karma: GrundKarma,
-            //     KomboKreis: 5,
-            //     Kombo: "Eisbola+Willensstärke",
-            //     Ini: GES,
-            //     SchadenProRundeSum: SchadenProRundeSum,
-            //     Fäden: 0,
-            //     Webschwierigkeit: 0,
-            //     RundenVorbereitung: Fäden,
-            //     Überanstrengung: 0,
-            //     KarmaVerbrauch: 1,
-            //     Angriffe: [
-            //         {
-            //             Art: mWsk,
-            //             Stufe: add(WAH, Rang, Karma),
-            //             Schaden: add(WIL, 5, Rang),
-            //             Treffer: MinZauberWsk,
-            //             SchadenProRunde: StandardSchadenProRunde,
-            //             Wiederholungen: 1,
-            //             Fehlschlag: 0,
-            //             AnzahlRundenAngriffAlsAktion: 1,
-            //             FolgeRundenAngriffAutomatisch: 0,
-            //         }
-            //     ]
-            // }, {
-            //     Karma: GrundKarma,
-            //     KomboKreis: 5,
-            //     Kombo: "Feuerball",
-            //     Ini: GES,
-            //     SchadenProRundeSum: SchadenProRundeSum,
-            //     Fäden: 1,
-            //     Webschwierigkeit: 12,
-            //     RundenVorbereitung: Fäden,
-            //     Überanstrengung: 0,
-            //     KarmaVerbrauch: 1,
-            //     Angriffe: [
-            //         {
-            //             Art: mWsk,
-            //             Stufe: add(WAH, Rang, Karma),
-            //             Schaden: add(WIL, 8, Rang),
-            //             Treffer: MinZauberWsk,
-            //             SchadenProRunde: StandardSchadenProRunde,
-            //             Wiederholungen: 1,
-            //             Fehlschlag: 0,
-            //             AnzahlRundenAngriffAlsAktion: 1,
-            //             FolgeRundenAngriffAutomatisch: 0,
-            //         }
-            //     ]
-            // }, {
-            //     Karma: GrundKarma,
-            //     KomboKreis: 6,
-            //     Kombo: "Querschläger",
-            //     Ini: GES,
-            //     SchadenProRundeSum: SchadenProRundeSum,
-            //     Fäden: min(Rang, evaluate("Max_Runden_Vorbereitung")),
-            //     Webschwierigkeit: 12,
-            //     RundenVorbereitung: Fäden,
-            //     Überanstrengung: 0,
-            //     KarmaVerbrauch: Fäden,
-            //     maximaleAngriffe: Fäden,
-            //     Angriffe: [
-            //         {
-            //             Art: mWsk,
-            //             Stufe: add(WAH, Rang, Karma),
-            //             Schaden: add(WIL, 12, Rang),
-            //             Treffer: MinWsk,
-            //             SchadenProRunde: StandardSchadenProRunde,
-            //             Wiederholungen: WiederholungenBisAngriffFehlschlägt,
-            //             Fehlschlag: 0,
-            //             AnzahlRundenAngriffAlsAktion: 1,
-            //             FolgeRundenAngriffAutomatisch: 0,
-            //         }
-            //     ]
-            // },
-            // // Erweiterte Matrix ab kreis 7
-            // {
-            //     Karma: GrundKarma,
-            //     KomboKreis: 7,
-            //     Kombo: "Erdpfeile erw. Matrix",
-            //     Ini: GES,
-            //     SchadenProRundeSum: SchadenProRundeSum,
-            //     Fäden: 0,
-            //     Webschwierigkeit: 0,
-            //     RundenVorbereitung: Fäden,
-            //     Überanstrengung: 0,
-            //     KarmaVerbrauch: 1,
-            //     Angriffe: [
-            //         {
-            //             Art: mWsk,
-            //             Stufe: add(WAH, Rang, Karma),
-            //             Schaden: add(WIL, 6),
-            //             Treffer: MinZauberWsk,
-            //             SchadenProRunde: StandardSchadenProRunde,
-            //             Wiederholungen: 1,
-            //             Fehlschlag: 0,
-            //             AnzahlRundenAngriffAlsAktion: 1,
-            //             FolgeRundenAngriffAutomatisch: 0,
-            //         }
-            //     ]
-            // }, {
-            //     Karma: GrundKarma,
-            //     KomboKreis: 7,
-            //     Kombo: "Feuerball erw. Matrix",
-            //     Ini: GES,
-            //     SchadenProRundeSum: SchadenProRundeSum,
-            //     Fäden: 0,
-            //     Webschwierigkeit: 0,
-            //     RundenVorbereitung: Fäden,
-            //     Überanstrengung: 0,
-            //     KarmaVerbrauch: 1,
-            //     Angriffe: [
-            //         {
-            //             Art: mWsk,
-            //             Stufe: add(WAH, Rang, Karma),
-            //             Schaden: add(WIL, 8, Rang),
-            //             Treffer: MinZauberWsk,
-            //             SchadenProRunde: StandardSchadenProRunde,
-            //             Wiederholungen: 1,
-            //             Fehlschlag: 0,
-            //             AnzahlRundenAngriffAlsAktion: 1,
-            //             FolgeRundenAngriffAutomatisch: 0,
-            //         }
-            //     ]
-            // }, {
-            //     Karma: GrundKarma,
-            //     KomboKreis: 7,
-            //     Kombo: "Querschläger erw. Matrix",
-            //     Ini: GES,
-            //     SchadenProRundeSum: SchadenProRundeSum,
-            //     Fäden: min(Rang, evaluate("Max_Runden_Vorbereitung")),
-            //     Webschwierigkeit: 12,
-            //     RundenVorbereitung: Fäden,
-            //     Überanstrengung: 0,
-            //     KarmaVerbrauch: add(1, Fäden),
-            //     maximaleAngriffe: add(1, Fäden),
-            //     Angriffe: [
-            //         {
-            //             Art: mWsk,
-            //             Stufe: add(WAH, Rang, Karma),
-            //             Schaden: add(WIL, 12, Rang),
-            //             Treffer: MinWsk,
-            //             SchadenProRunde: StandardSchadenProRunde,
-            //             Wiederholungen: WiederholungenBisAngriffFehlschlägt,
-            //             Fehlschlag: 0,
-            //             AnzahlRundenAngriffAlsAktion: 1,
-            //             FolgeRundenAngriffAutomatisch: 0,
-            //         }
-            //     ]
-            // }, {
-            //     Karma: GrundKarma,
-            //     KomboKreis: 7,
-            //     Kombo: "Todesregen",
-            //     Ini: GES,
-            //     SchadenProRundeSum: SchadenProRundeSum,
-            //     Fäden: 0,
-            //     Webschwierigkeit: 0,
-            //     RundenVorbereitung: Fäden,
-            //     Überanstrengung: 0,
-            //     KarmaVerbrauch: 1,
-            //     Angriffe: [
-            //         {
-            //             Art: mWsk,
-            //             Stufe: add(WAH, Rang, Karma),
-            //             // Todesregen dauert mehrere Runden, aber er muss sich konzentrieren
-            //             Schaden: add(WIL, 5, Rang),
-            //             Treffer: MinZauberWsk,
-            //             SchadenProRunde: StandardSchadenProRunde,
-            //             Wiederholungen: 1,
-            //             Fehlschlag: 0,
-            //             AnzahlRundenAngriffAlsAktion: Rang,
-            //             FolgeRundenAngriffAutomatisch: 0,
-            //         }
-            //     ]
-            // },
+            {
+                KomboKreis: 6,
+                Kombo: "Erdstab + Umhang des Feuerplünderers + Steinregen",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 10,
+                MinFäden: 4,
+                FixKarmaVerbrauch: 3,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        Schaden: add(WILS, 5, mul(2, add(Kreis, 2)), mul(ExtraFäden,2)),
+                        Treffer: MinZauberWsk,
+                        Erfolge: add(TrefferErfolge,1),
+                        FolgeRundenAngriffAutomatisch: Rang,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 7,
+                Kombo: "Erdstab + Todesregen",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 11,
+                MinFäden: 4,
+                FixKarmaVerbrauch: 3,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(WAH, Rang, Karma),
+                        Schaden: add(WILS, 8, mul(ExtraFäden,2)),
+                        Treffer: MinZauberWsk,
+                        Erfolge: add(TrefferErfolge,1),
+                        FolgeRundenAngriffAutomatisch: Rang,
+                    }
+                ]
+            },
         ]
     },
 
@@ -938,172 +1120,6 @@ var Disziplinen = [
     // ///////////////////////////////////////////////////////////////////////
     //
     // {
-    //     Name: "Magier",
-    //     Color: "rgb(90, 243, 243)",
-    //     Attribute: [
-    //         "WAH", "WIL"
-    //     ],
-    //     Kombos: [
-    //         {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 1,
-    //             Kombo: "mentaler Dolch",
-    //             Ini: GES,
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Fäden: 0,
-    //             Webschwierigkeit: 0,
-    //             RundenVorbereitung: Fäden,
-    //             Überanstrengung: 0,
-    //             KarmaVerbrauch: 1,
-    //             Angriffe: [
-    //                 {
-    //                     Art: mWsk,
-    //                     Stufe: add(WAH, Rang, Karma),
-    //                     Schaden: add(WIL, 2),
-    //                     Treffer: MinZauberWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fehlschlag: 0,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         },
-    //         // Willensstärke ab Kreis 5
-    //         {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 5,
-    //             Kombo: "Improvisiertes Geschoss",
-    //             Ini: GES,
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Fäden: 1,
-    //             Webschwierigkeit: 9,
-    //             RundenVorbereitung: Fäden,
-    //             Überanstrengung: 0,
-    //             KarmaVerbrauch: 2,
-    //             Angriffe: [
-    //                 {
-    //                     Art: mWsk,
-    //                     Stufe: add(WAH, Rang, Karma),
-    //                     Schaden: add(WIL, Rang, 6),
-    //                     Treffer: MinZauberWsk,
-    //                     // pro Runde ein Angriff möglich für Wirkungsdauer
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fehlschlag: 0,
-    //                     AnzahlRundenAngriffAlsAktion: Rang,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         },
-    //         // Erweiterte Matrix ab Kreis 6
-    //         {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 6,
-    //             Kombo: "Geschoss des Grauens",
-    //             Ini: GES,
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Fäden: 2,
-    //             Webschwierigkeit: 0,
-    //             RundenVorbereitung: Fäden,
-    //             Überanstrengung: 0,
-    //             KarmaVerbrauch: 3,
-    //             Angriffe: [
-    //                 {
-    //                     Art: mWsk,
-    //                     Stufe: add(WAH, Rang, Karma),
-    //                     Schaden: add(WIL, Rang, 5),
-    //                     Treffer: MinZauberWsk,
-    //                     // Macht automatisch Schaden pro Runde
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fehlschlag: 0,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: Rang,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 6,
-    //             Kombo: "Zerschmettern",
-    //             Ini: GES,
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Fäden: 1,
-    //             Webschwierigkeit: 11,
-    //             RundenVorbereitung: Fäden,
-    //             Überanstrengung: 0,
-    //             KarmaVerbrauch: 2,
-    //             Angriffe: [
-    //                 {
-    //                     Art: mWsk,
-    //                     Stufe: add(WAH, Rang, Karma),
-    //                     Schaden: add(WIL, Rang, 15),
-    //                     Treffer: MinZauberWsk,
-    //                     // Bonus von 10%, da schon bei "gut" durch
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1.1,
-    //                     Fehlschlag: 0,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 7,
-    //             Kombo: "Siedendes Blut",
-    //             Ini: GES,
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Fäden: 2,
-    //             Webschwierigkeit: 12,
-    //             RundenVorbereitung: 2,
-    //             Überanstrengung: 0,
-    //             KarmaVerbrauch: 3,
-    //             Angriffe: [
-    //                 {
-    //                     Art: mWsk,
-    //                     Stufe: add(WAH, Rang, Karma),
-    //                     Schaden: add(WIL, Rang, 9),
-    //                     Treffer: MinZauberWsk,
-    //                     // Der Angriff erfolgt mehrere Runden lang (Rang?)
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fehlschlag: 0,
-    //                     AnzahlRundenAngriffAlsAktion: Rang,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 8,
-    //             Kombo: "Zerquetschen",
-    //             Ini: GES,
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Fäden: 2,
-    //             Webschwierigkeit: 15,
-    //             RundenVorbereitung: Fäden,
-    //             Überanstrengung: 0,
-    //             KarmaVerbrauch: 3,
-    //             Angriffe: [
-    //                 {
-    //                     Art: mWsk,
-    //                     Stufe: add(WAH, Rang, Karma),
-    //                     Schaden: add(WIL, Rang, 10),
-    //                     Treffer: MinZauberWsk,
-    //                     // Macht automatisch Schaden pro Runde
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 2,
-    //                     Fehlschlag: 0,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: Rang,
-    //                 }
-    //             ]
-    //         },
-    //     ]
-    // },
-    //
-    // ///////////////////////////////////////////////////////////////////////
-    //
-    // {
     //     Name: "Alchemist",
     //     Color: "rgb(250, 0, 0)",
     //     Attribute: [
@@ -1319,527 +1335,4 @@ var Disziplinen = [
     //     ]
     // },
     //
-    // ///////////////////////////////////////////////////////////////////////
-    //
-    // {
-    //     Name: "Krieger",
-    //     Color: "rgb(0, 0, 0)",
-    //     Attribute: [
-    //         "GES", "STÄ", "WAH"
-    //     ],
-    //     Waffe: 7,
-    //     Kombos: [
-    //         {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 1,
-    //             Kombo: "Lufttanz,Nahkampfwaffen",
-    //             Ini: add(Rang, GES),
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Überanstrengung: 1,
-    //             KarmaVerbrauch: 2,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     Schaden: add(STÄ, Waffe),
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                 }, {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     Schaden: add(STÄ, Waffe),
-    //                     Treffer: mul(Min2xIni, MinWsk),
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 1,
-    //             Kombo: "Kampfsinn,Nahkampfwaffen",
-    //             Ini: GES,
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Überanstrengung: 1,
-    //             KarmaVerbrauch: 1,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, KampfsinnKarmaRang, Karma),
-    //                     Schaden: add(STÄ, Waffe),
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 3,
-    //             Kombo: "Tigersprung,Kampfsinn,Nahkampfwaffen",
-    //             Ini: add(Rang, GES),
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Überanstrengung: 2,
-    //             KarmaVerbrauch: 1,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, KampfsinnKarmaRang, Karma),
-    //                     Schaden: add(STÄ, Waffe),
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 3,
-    //             Kombo: "Tigersprung,Lufttanz,Nahkampfwaffen",
-    //             Ini: add(Rang, Rang, GES),
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Überanstrengung: 2,
-    //             KarmaVerbrauch: 2,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     Schaden: add(STÄ, Waffe),
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }, {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     Schaden: add(STÄ, Waffe),
-    //                     Treffer: mul(Min2xIni, MinWsk),
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 4,
-    //             Kombo: "Tigersprung,Kampfsinn,Nahkampfwaffen,Schmetterschlag",
-    //             Ini: add(Rang, GES),
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Überanstrengung: 3,
-    //             KarmaVerbrauch: 3,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, KampfsinnKarmaRang, Karma),
-    //                     Schaden: add(STÄ, div(add(Rang, 3, Karma), 4), Waffe),
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 4,
-    //             Kombo: "Tigersprung,Lufttanz,Nahkampfwaffen,Schmetterschlag",
-    //             Ini: add(Rang, Rang, GES),
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Überanstrengung: 4,
-    //             KarmaVerbrauch: 4,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     Schaden: add(STÄ, div(add(Rang, 3, Karma), 4), Waffe),
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }, {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     Schaden: add(STÄ, div(add(Rang, 3, Karma), 4), Waffe),
-    //                     Treffer: mul(Min2xIni, MinWsk),
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 5,
-    //             Kombo: "Tigersprung,Kampfsinn,Nahkampfwaffen,Schmetterschlag,Luftgleiten,Nachtreten",
-    //             Ini: add(Rang, GES),
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Überanstrengung: 5,
-    //             KarmaVerbrauch: 5,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, KampfsinnKarmaRang, Karma),
-    //                     Schaden: add(STÄ, div(add(Rang, 3, Karma), 2), Waffe),
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }, {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     Schaden: STÄ,
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 5,
-    //             Kombo: "Tigersprung,Lufttanz,Nahkampfwaffen,Schmetterschlag,Luftgleiten,Nachtreten",
-    //             Ini: add(Rang, Rang, GES),
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Überanstrengung: 5,
-    //             KarmaVerbrauch: 5,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     Schaden: add(STÄ, div(add(Rang, 3, Karma), 2), Waffe),
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }, {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     Schaden: add(STÄ, div(add(Rang, 3, Karma), 2), Waffe),
-    //                     Treffer: mul(Min2xIni, MinWsk),
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }, {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     Schaden: STÄ,
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 7,
-    //             Kombo: "Tigersprung,Kampfsinn,Nahkampfwaffen,Schmetterschlag,Luftgleiten,Zweiter Angriff,Nachtreten",
-    //             Ini: add(Rang, GES),
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Überanstrengung: 5,
-    //             KarmaVerbrauch: 5,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma, KampfsinnKarmaRang),
-    //                     Schaden: add(STÄ, div(add(Rang, 3, Karma), 2), Waffe),
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }, {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, KampfsinnKarmaRang),
-    //                     Schaden: add(STÄ, div(add(Rang, 3, Karma), 2), Waffe),
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }, {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma, KampfsinnKarmaRang),
-    //                     Schaden: STÄ,
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 8,
-    //             Kombo: "Kobrastoss,Kampfsinn,Nahkampfwaffen,Schmetterschlag,Luftgleiten,Zweiter Angriff,Nachtreten",
-    //             Ini: add(Rang, GES, Karma),
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             Überanstrengung: 5,
-    //             KarmaVerbrauch: 5,
-    //             AngriffNurErsteRunde: true,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Rang, Karma, KampfsinnKarmaRang),
-    //                     Schaden: add(STÄ, div(add(Rang, 3, Karma), 2), Waffe),
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }, {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Rang, KampfsinnKarmaRang),
-    //                     Schaden: add(STÄ, div(add(Rang, 3, Karma), 2), Waffe),
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }, {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Rang, Karma, KampfsinnKarmaRang),
-    //                     Schaden: STÄ,
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fäden: 0,
-    //                     Fehlschlag: AlchmFehlschlag,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }
-    //     ]
-    // },
-    //
-    // ///////////////////////////////////////////////////////////////////////
-    //
-    // {
-    //     Name: "Luftpirat",
-    //     Color: "#8A0829",
-    //     Attribute: [
-    //         "GES", "STÄ"
-    //     ],
-    //     Waffe: 7,
-    //     Kombos: [
-    //         {
-    //             // Frage - wie Kampfgebrüll (-Rang auf alle Proben des Gegners?)
-    //             Karma: GrundKarma,
-    //             KomboKreis: 1,
-    //             Kombo: "Nahkampfwaffen",
-    //             Ini: GES,
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             RundenVorbereitung: 0,
-    //             Überanstrengung: 0,
-    //             KarmaVerbrauch: 1,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     Schaden: add(STÄ, Waffe),
-    //                     Treffer: MinWsk,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Wiederholungen: 1,
-    //                     Fehlschlag: 0,
-    //                     Fäden: 0,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //             // wie Schildangriff? Niederschlagsprobe Gegner -7...
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 5,
-    //             Kombo: "Nahkampfwaffen+Nachtreten",
-    //             Ini: GES,
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             RundenVorbereitung: 0,
-    //             Überanstrengung: 0,
-    //             KarmaVerbrauch: 1,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     Schaden: add(STÄ, Waffe),
-    //                     Treffer: MinWsk,
-    //                     Wiederholungen: 1,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Fehlschlag: 0,
-    //                     Fäden: 0,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 },
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang),
-    //                     Schaden: add(STÄ),
-    //                     Treffer: MinWsk,
-    //                     Wiederholungen: 1,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Fehlschlag: 0,
-    //                     Fäden: 0,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 6,
-    //             Kombo: "Nahkampfwaffen+Schwungvoller Angriff+Nachtreten",
-    //             Ini: GES,
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             RundenVorbereitung: 0,
-    //             Überanstrengung: 1,
-    //             KarmaVerbrauch: 1,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     Schaden: add(STÄ, Waffe),
-    //                     Treffer: MinWsk,
-    //                     // bei aussergewöhnlich noch mal angreifen
-    //                     Wiederholungen: 1.1,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Fehlschlag: 0,
-    //                     Fäden: 0,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 },
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang),
-    //                     Schaden: add(STÄ),
-    //                     Treffer: MinWsk,
-    //                     Wiederholungen: 1,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Fehlschlag: 0,
-    //                     Fäden: 0,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 7,
-    //             Kombo: "Nahkampfwaffen+Schwungvoller Angriff+Nachtreten",
-    //             Ini: GES,
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             RundenVorbereitung: 0,
-    //             Überanstrengung: 1,
-    //             KarmaVerbrauch: 2,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     Schaden: add(STÄ, Waffe, Karma),
-    //                     Treffer: MinWsk,
-    //                     // bei aussergewöhnlich noch mal angreifen
-    //                     Wiederholungen: 1.1,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Fehlschlag: 0,
-    //                     Fäden: 0,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 },
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang),
-    //                     Schaden: add(STÄ),
-    //                     Treffer: MinWsk,
-    //                     Wiederholungen: 1,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Fehlschlag: 0,
-    //                     Fäden: 0,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         }, {
-    //             Karma: GrundKarma,
-    //             KomboKreis: 8,
-    //             Kombo: "Nahkampfwaffen+Schwungvoller Angriff+Hammerschlag+Nachtreten mit Hammerschlag",
-    //             Ini: GES,
-    //             SchadenProRundeSum: SchadenProRundeSum,
-    //             RundenVorbereitung: 0,
-    //             Überanstrengung: 1,
-    //             KarmaVerbrauch: 3,
-    //             Angriffe: [
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang, Karma),
-    //                     // bei Kampfgebrüll / Schlachtruf Erfolg +3, sonst +0. Da sozial meist schwach => +2.3
-    //                     Schaden: add(STÄ, Rang, Waffe, Karma, 2.3),
-    //                     Treffer: MinWsk,
-    //                     // bei aussergewöhnlich noch mal angreifen
-    //                     Wiederholungen: 1.1,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Fehlschlag: 0,
-    //                     Fäden: 0,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 },
-    //                 {
-    //                     Art: kWsk,
-    //                     Stufe: add(GES, Rang),
-    //                     // kann man Hammerschlag auf Nachtreten nehmen?
-    //                     Schaden: add(STÄ, Rang, Karma, 2.3),
-    //                     Treffer: MinWsk,
-    //                     Wiederholungen: 1,
-    //                     SchadenProRunde: StandardSchadenProRunde,
-    //                     Fehlschlag: 0,
-    //                     Fäden: 0,
-    //                     AnzahlRundenAngriffAlsAktion: 1,
-    //                     FolgeRundenAngriffAutomatisch: 0,
-    //                 }
-    //             ]
-    //         },
-    //     ]
-    // },
 ];

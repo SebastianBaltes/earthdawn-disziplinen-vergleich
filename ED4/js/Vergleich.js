@@ -17,7 +17,7 @@ $(function () {
     $('.options').append(Slider("Gegner_Grundwert", 1, 80, 1, refreshResult));
     $('.options').append(Slider("Gegner_Steigung", 0, 3, 0.1, refreshResult));
     $('.options').append(Slider("Gegner_Steigerungsbasis", 1, 1.66, 0.01, refreshResult));
-    $('.options').append(Slider("Gegner_Delta_Ini", -15, +15, 1, refreshResult));
+    $('.options').append(Slider("Gegner_Delta_Ini", -40, +40, 1, refreshResult));
     $('.options').append(Slider("Gegner_Delta_kWsk", -15, +15, 1, refreshResult));
     $('.options').append(Slider("Gegner_Delta_mWsk", -15, +15, 1, refreshResult));
     $('.options').append(Slider("Gegner_Delta_sWsk", -15, +15, 1, refreshResult));
@@ -184,7 +184,7 @@ $(function () {
         series[0].lines = {show: true, fill: true, fillColor: "rgba(0, 0, 0, 0.1)", lineWidth: 0};
         series[1].lines = {lineWidth: 15};
 
-        $('.result').append('<div id="placeholder" style="width:800px;height:800px;"></div>');
+        $('.result').append('<div id="placeholder" style="width:500px;height:500px;"></div>');
         $.plot("#placeholder", series, {
             colors: colors,
             series: {
@@ -302,6 +302,7 @@ $(function () {
                             detailTable.col("Angriff-" + nr + "-Stufe", char.get("Stufe"));
                             detailTable.col("Angriff-" + nr + "-Treffer", char.get("Treffer"));
                             detailTable.col("Angriff-" + nr + "-Erfolge", char.get("Erfolge"));
+                            detailTable.col("Angriff-" + nr + "-Lufttzanz Treffer", LufttzanzTreffer(kombo));
                             detailTable.col("Angriff-" + nr + "-Schadens-stufe", char.get("SchadenMitErfolgen"));
                             detailTable.col("Angriff-" + nr + "-Schaden", char.get("SchadenEinzelrunde"));
                             detailTable.col("Angriff-" + nr + "-Schaden / Runde", char.get("SchadenProRunde"));

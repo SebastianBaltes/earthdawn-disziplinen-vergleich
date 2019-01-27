@@ -45,7 +45,7 @@ var Stufe= function(wert) {
 
 window.Gegner_Grundwert = 1;
 window.Gegner_Steigerungsbasis = 1;
-window.Gegner_Steigung = 0;
+window.Gegner_Steigung = 1;
 window.Gegner_Delta_Ini = 0;
 window.Gegner_Delta_kWsk = 2;
 window.Gegner_Delta_mWsk = -1;
