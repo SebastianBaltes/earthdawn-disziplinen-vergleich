@@ -27,6 +27,7 @@ window.GES = val("GES");
 window.STÄ = val("STÄ");
 window.WAH = val("WAH");
 window.WIL = val("WIL");
+window.CHA = val("CHA");
 window.Rang = val("Rang");
 window.Waffe = val("Waffe");
 window.GrundKarma = ß('GrundKarma',mul(4,later('Karma_Einsatz')));
@@ -45,6 +46,7 @@ window.Überanstrengung = val("Überanstrengung");
 window.GegnerWsk = ß('GegnerWsk',property(val("GegnerWsk"), Art));
 window.GegnerKwsk = ß('GegnerKwsk',property(val("GegnerWsk"), kWsk));
 window.GegnerMwsk = ß('GegnerMwsk',property(val("GegnerWsk"), mWsk));
+window.GegnerSwsk = ß('GegnerSwsk',property(val("GegnerWsk"), sWsk));
 window.GegnerRüstung = ß('GegnerRüstung',property(val("GegnerRüstung"), Art));
 window.MixturKreis = val("MixturKreis");
 window.Fäden = val("Fäden");
@@ -138,6 +140,17 @@ window.Lufttanz = ß('Lufttanz',add(Rang, Karma));
 window.Schildschlag = ß('Schildschlag',add(STÄ, Rang, Karma));
 window.Waffenschaden = ß('Waffenschaden',add(STÄ, Waffe));
 window.Hammerschlag = ß('Hammerschlag',add(Rang, Karma));
+window.MagischeMarkierung = ß('MagischeMarkierung',mul(2,erfolge(add(WAH, Rang, Karma),sub(GegnerMwsk,5))));
+window.Blattschuss = ß('Blattschuss',mul(Rang, Karma));
+window.Projektilwaffen = ß('Projektilwaffen',add(GES, Rang, Karma));
+window.Brandpfeil = ß('Waffenschaden',add(Rang, Karma, WIL, Waffe));
+window.ZweiterSchuss = ß('ZweiterSchuss',add(Rang, Karma, GES));
+window.SchwachstelleErkennen = ß('SchwachstelleErkennen',mul(2,erfolge(add(WAH, Rang, Karma),sub(GegnerMwsk,5))));
+window.Verspotten = ß('Verspotten',max(mul(Rang,0.5),probe(add(Rang, Karma, CHA),GegnerSwsk)));
+window.Überraschungsschlag = ß('Überraschungsschlag',add(Rang,Karma));
+window.Zweitwaffe = ß('Zweitwaffe',add(Rang, Karma, GES));
+window.Nachtreten = ß('Nachtreten',add(Rang, Karma, GES));
+window.SchwungvollerAngriff = (ersterAngriffStufe) => ß('SchwungvollerAngriff',mul(add(Rang, Karma, GES),erfolge(ersterAngriffStufe,GegnerKwsk)));
 
 var DefaultCharacter = {
     ErweiterteFäden: 0,
@@ -200,6 +213,204 @@ var Disziplinen = [
 
     // ///////////////////////////////////////////////////////////////////////
     //
+    // {
+    //     Name: "Schwertmeister",
+    //     Color: "rgb(170, 200, 90)",
+    //     Attribute: [
+    //         "GES", "CHA", "STÄ"
+    //     ],
+    //     Waffe: 6,
+    //     inherits: DefaultCharacter,
+    //
+    //     //                         Kreis ÜA Karma Wirkung
+    //     // Nahkampfwaffen          1     0  1     Rang+GES>kWsk
+    //     // Kampfsinn               1     1  1     Rang+WAH>mWsk und Ini größer, pro Erfolg +2 erste Angriff
+    //     // Tigersprung             1     1  1     +Ini
+    //     // Manövrieren             1     1  1     Rang+GES>kWsk pro Erfolg +2 erste Angriff
+    //     // Verspotten              1     1  1     Rang+CHA>sWsk pro Rang -1 auf Gegner Proben
+    //
+    //     // Riposte                 3
+    //     // Kobrastoß               5
+    //     // Kobrastoß               5
+    //
+    //     // Überraschungsschlag     1     1  1     Rang+STÄ nur bei Überraschung
+    //
+    //     // Schwachstelle Erkennen  5     1  1     Rang+WAH>mWsk, Erfolge*2 auf Schaden
+    //     // Zweitwaffe              5     1  1     Rang+GES>kWSK
+    //     // Karma erster Angriff    5     0  1
+    //     // Ini+1                   7     0  0
+    //
+    //     Kombos: [
+    //         {
+    //             KomboKreis: 1,
+    //             inherits: DefaultKombo,
+    //             Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung",
+    //             Ini: add(GES, Tigersprung),
+    //             Überanstrengung: 3,
+    //             KarmaVerbrauch: 4,
+    //             Angriffe: [
+    //                 {
+    //                     Art: kWsk,
+    //                     Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
+    //                     Schaden: Waffenschaden,
+    //                     Treffer: MinWsk,
+    //                 }
+    //             ]
+    //         },
+    //     ]
+    // },
+
+    // ///////////////////////////////////////////////////////////////////////
+    //
+    {
+        Name: "Dieb",
+        Color: "rgb(150, 90, 150)",
+        Attribute: [
+            "GES", "WAH", "CHA"
+        ],
+        Waffe: 5,
+        inherits: DefaultCharacter,
+
+        //                           Kreis ÜA Karma Wirkung
+        // Nahkampfwaffen            1     0  1     Rang+GES>kWsk
+        // Überraschungsschlag       1     1  1     Rang+STÄ nur bei Überraschung
+        // Verspotten                1     1  1     Rang+CHA>sWsk pro Rang -1 auf Gegner Proben
+
+        // Schwachstelle Erkennen    5     1  1     Rang+WAH>mWsk, Erfolge*2 auf Schaden
+        // Zweitwaffe                5     1  1     Rang+GES>kWSK
+        // Karma erster Angriff      5     0  1
+        // Ini+1                     7     0  0
+
+        Kombos: [
+            {
+                KomboKreis: 1,
+                inherits: DefaultKombo,
+                Kombo: "Nahkampfwaffen + Verspotten",
+                Ini: add(GES),
+                Überanstrengung: 1,
+                KarmaVerbrauch: 2,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen, Verspotten),
+                        Schaden: add(Waffenschaden),
+                        Treffer: MinWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 1,
+                inherits: DefaultKombo,
+                Kombo: "Nahkampfwaffen + Verspotten + Überraschungsschlag",
+                Ini: add(GES),
+                Überanstrengung: 2,
+                KarmaVerbrauch: 3,
+                AngriffNurErsteRunde: true,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen, Verspotten),
+                        Schaden: add(Waffenschaden, Überraschungsschlag),
+                        Treffer: MinWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 5,
+                inherits: DefaultKombo,
+                Kombo: "Nahkampfwaffen + Verspotten + Schwachstelle Erkennen + Zweitwaffe",
+                Ini: add(GES),
+                Überanstrengung: 3,
+                KarmaVerbrauch: 4,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen, Verspotten),
+                        Schaden: add(Waffenschaden, SchwachstelleErkennen),
+                        Treffer: MinWsk,
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: add(Zweitwaffe, Verspotten),
+                        Schaden: add(Waffenschaden, SchwachstelleErkennen),
+                        Treffer: MinWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 5,
+                inherits: DefaultKombo,
+                Kombo: "Nahkampfwaffen + Verspotten + Schwachstelle Erkennen + Zweitwaffe + Überraschungsschlag + Karma erster Angriff",
+                Ini: add(GES),
+                Überanstrengung: 4,
+                KarmaVerbrauch: 5,
+                AngriffNurErsteRunde: true,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen, Verspotten, Karma),
+                        Schaden: add(Waffenschaden, SchwachstelleErkennen, Überraschungsschlag),
+                        Treffer: MinWsk,
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: add(Zweitwaffe, Verspotten),
+                        Schaden: add(Waffenschaden, SchwachstelleErkennen),
+                        Treffer: MinWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 7,
+                inherits: DefaultKombo,
+                Kombo: "Nahkampfwaffen + Verspotten + Schwachstelle Erkennen + Zweitwaffe + Ini+1",
+                Ini: add(GES,1),
+                Überanstrengung: 3,
+                KarmaVerbrauch: 4,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen, Verspotten),
+                        Schaden: add(Waffenschaden, SchwachstelleErkennen),
+                        Treffer: MinWsk,
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: add(Zweitwaffe, Verspotten),
+                        Schaden: add(Waffenschaden, SchwachstelleErkennen),
+                        Treffer: MinWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 7,
+                inherits: DefaultKombo,
+                Kombo: "Nahkampfwaffen + Verspotten + Schwachstelle Erkennen + Zweitwaffe + Überraschungsschlag + Karma erster Angriff + Ini+1",
+                Ini: add(GES,1),
+                Überanstrengung: 4,
+                KarmaVerbrauch: 5,
+                AngriffNurErsteRunde: true,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nahkampfwaffen, Verspotten, Karma),
+                        Schaden: add(Waffenschaden, SchwachstelleErkennen, Überraschungsschlag),
+                        Treffer: MinWsk,
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: add(Zweitwaffe, Verspotten),
+                        Schaden: add(Waffenschaden, SchwachstelleErkennen),
+                        Treffer: MinWsk,
+                    }
+                ]
+            },
+        ]
+    },
+
+    // ///////////////////////////////////////////////////////////////////////
+    //
+
     {
         Name: "Krieger",
         Color: "rgb(0, 0, 0)",
@@ -209,17 +420,23 @@ var Disziplinen = [
         Waffe: 8,
         inherits: DefaultCharacter,
 
-        //                   Kreis ÜA Karma Wirkung
-        // Nahkampfwaffen    1     0  1     Rang+GES>kWsk
-        // Manövrieren       1     1  1     Rang+GES>kWsk pro Erfolg +2 erste Angriff
-        // Kampfsinn         1     1  1     Rang+WAH>mWsk und Ini größer, pro Erfolg +2 erste Angriff
-        // Tigersprung       1     1  1     +Ini
-        // Schildschlag      1     1  1     Rang+STÄ
-        // Lufttanz          3     2  1     +Ini, +2 Angriff bei >3 Ini-Erfolgen
-        // Kampfriten        5     0  0     -1 ÜA
-        // Schadenskarma     5     0  1     Karma auf Schaden
-        // Hammerschlag      7     1  1     Rang auf Schaden
-        // Zweiter Angriff   8     2  1     Rang+GES>kWsk
+        //                         Kreis ÜA Karma Wirkung
+        // Nahkampfwaffen          1     0  1     Rang+GES>kWsk
+        // Manövrieren             1     1  1     Rang+GES>kWsk pro Erfolg +2 erste Angriff
+        // Kampfsinn               1     1  1     Rang+WAH>mWsk und Ini größer, pro Erfolg +2 erste Angriff
+        // Tigersprung             1     1  1     +Ini
+        // Lufttanz                3     2  1     +Ini, +2 Angriff bei >3 Ini-Erfolgen
+        // Kampfriten              5     0  0     -1 ÜA
+        // Schadenskarma           5     0  1     Karma auf Schaden
+        // Schwachstelle Erkennen  5     1  1     Rang+WAH>mWsk, Erfolge*2 auf Schaden
+
+        // Nachtreten              5     1  1     Rang+GES>kWsk => STÄ
+        // Schwungvoller Angriff   5     1  1     Rang+GES>kWsk und 1. Angriff mindestens 1 zus. Erfolg
+
+        // Hammerschlag            7     1  1     Rang auf Schaden
+        // Zweiter Angriff         8     2  1     Rang+GES>kWsk
+
+        // Zweitwaffe & Schildschlag wird ignoriert, da 2-Händer-Waffe angenommen wird, welche als Kombi mehr schaden macht
 
         Kombos: [
             {
@@ -234,22 +451,6 @@ var Disziplinen = [
                         Art: kWsk,
                         Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
                         Schaden: Waffenschaden,
-                        Treffer: MinWsk,
-                    }
-                ]
-            },
-            {
-                KomboKreis: 1,
-                inherits: DefaultKombo,
-                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Schildschlag",
-                Ini: add(GES, Tigersprung),
-                Überanstrengung: 4,
-                KarmaVerbrauch: 5,
-                Angriffe: [
-                    {
-                        Art: kWsk,
-                        Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
-                        Schaden: Schildschlag,
                         Treffer: MinWsk,
                     }
                 ]
@@ -277,119 +478,111 @@ var Disziplinen = [
                 ]
             },
             {
-                KomboKreis: 3,
-                inherits: DefaultKombo,
-                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Schildschlag + Lufttanz",
-                Ini: add(GES, Tigersprung, Lufttanz),
-                Überanstrengung: 7,
-                KarmaVerbrauch: 7,
-                Angriffe: [
-                    {
-                        Art: kWsk,
-                        Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
-                        Schaden: Schildschlag,
-                        Treffer: MinWsk,
-                    },
-                    {
-                        Art: kWsk,
-                        Stufe: add(Nahkampfwaffen),
-                        Schaden: Schildschlag,
-                        Treffer: LufttzanzTreffer,
-                    }
-                ]
-            },
-            {
                 KomboKreis: 5,
                 inherits: DefaultKombo,
-                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Lufttanz + Kampfriten + Schadenskarma",
+                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Lufttanz + Kampfriten + Schadenskarma + Schwachstelle Erkennen + Schwungvoller Angriff + Nachtreten",
                 Ini: add(GES, Tigersprung, Lufttanz),
-                Überanstrengung: 4,
-                KarmaVerbrauch: 7,
+                Überanstrengung: 8,
+                KarmaVerbrauch: 12,
                 Angriffe: [
                     {
                         Art: kWsk,
                         Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
-                        Schaden: add(Waffenschaden, Karma),
+                        Schaden: add(Waffenschaden, Karma, SchwachstelleErkennen),
+                        Treffer: MinWsk,
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: SchwungvollerAngriff(add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus)),
+                        Schaden: add(Waffenschaden, Karma, SchwachstelleErkennen),
                         Treffer: MinWsk,
                     },
                     {
                         Art: kWsk,
                         Stufe: add(Nahkampfwaffen),
-                        Schaden: add(Waffenschaden, Karma),
+                        Schaden: add(Waffenschaden, Karma, SchwachstelleErkennen),
                         Treffer: LufttzanzTreffer,
-                    }
-                ]
-            },
-            {
-                KomboKreis: 5,
-                inherits: DefaultKombo,
-                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Schildschlag + Lufttanz + Kampfriten + Schadenskarma",
-                Ini: add(GES, Tigersprung, Lufttanz),
-                Überanstrengung: 6,
-                KarmaVerbrauch: 9,
-                Angriffe: [
-                    {
-                        Art: kWsk,
-                        Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
-                        Schaden: add(Schildschlag, Karma),
-                        Treffer: MinWsk,
                     },
                     {
                         Art: kWsk,
-                        Stufe: add(Nahkampfwaffen),
-                        Schaden: add(Schildschlag, Karma),
-                        Treffer: LufttzanzTreffer,
-                    }
+                        Stufe: add(Nachtreten),
+                        Schaden: add(STÄ, Karma, SchwachstelleErkennen),
+                        Treffer: MinWsk,
+                    },
                 ]
             },
             {
                 KomboKreis: 7,
                 inherits: DefaultKombo,
-                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Lufttanz + Kampfriten + Schadenskarma + Hammerschlag",
+                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Lufttanz + Kampfriten + Schadenskarma + Schwachstelle Erkennen + Schwungvoller Angriff + Nachtreten + Hammerschlag",
                 Ini: add(GES, Tigersprung, Lufttanz),
-                Überanstrengung: 5,
-                KarmaVerbrauch: 8,
+                Überanstrengung: 11,
+                KarmaVerbrauch: 15,
                 Angriffe: [
                     {
                         Art: kWsk,
                         Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
-                        Schaden: add(Waffenschaden, Karma, Hammerschlag),
+                        Schaden: add(Waffenschaden, Karma, Hammerschlag, SchwachstelleErkennen),
+                        Treffer: MinWsk,
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: SchwungvollerAngriff(add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus)),
+                        Schaden: add(Waffenschaden, Karma, Hammerschlag, SchwachstelleErkennen),
                         Treffer: MinWsk,
                     },
                     {
                         Art: kWsk,
                         Stufe: add(Nahkampfwaffen),
-                        Schaden: add(Waffenschaden, Karma, Hammerschlag),
+                        Schaden: add(Waffenschaden, Karma, Hammerschlag, SchwachstelleErkennen),
                         Treffer: LufttzanzTreffer,
-                    }
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nachtreten),
+                        Schaden: add(STÄ, Karma, SchwachstelleErkennen),
+                        Treffer: MinWsk,
+                    },
                 ]
             },
             {
                 KomboKreis: 8,
                 inherits: DefaultKombo,
-                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Lufttanz + Kampfriten + Schadenskarma + Hammerschlag + Zweiter Angriff",
+                Kombo: "Nahkampfwaffen + Manövrieren + Kampfsinn + Tigersprung + Lufttanz + Kampfriten + Schadenskarma + Schwachstelle Erkennen + Schwungvoller Angriff + Nachtreten + Hammerschlag + Zweiter Angriff",
                 Ini: add(GES, Tigersprung, Lufttanz),
-                Überanstrengung: 7,
-                KarmaVerbrauch: 9,
+                Überanstrengung: 15,
+                KarmaVerbrauch: 18,
                 Angriffe: [
                     {
                         Art: kWsk,
                         Stufe: add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus),
-                        Schaden: add(Waffenschaden, Karma, Hammerschlag),
+                        Schaden: add(Waffenschaden, Karma, Hammerschlag, SchwachstelleErkennen),
+                        Treffer: MinWsk,
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: SchwungvollerAngriff(add(Nahkampfwaffen, ManövrierenErsterAngriffBonus, KampfsinnErsterAngriffBonus)),
+                        Schaden: add(Waffenschaden, Karma, Hammerschlag, SchwachstelleErkennen),
                         Treffer: MinWsk,
                     },
                     {
                         Art: kWsk,
                         Stufe: add(Nahkampfwaffen),
-                        Schaden: add(Waffenschaden, Karma, Hammerschlag),
+                        Schaden: add(Waffenschaden, Karma, Hammerschlag, SchwachstelleErkennen),
                         Treffer: MinWsk,
                     },
                     {
                         Art: kWsk,
                         Stufe: add(Nahkampfwaffen),
-                        Schaden: add(Waffenschaden, Karma, Hammerschlag),
+                        Schaden: add(Waffenschaden, Karma, Hammerschlag, SchwachstelleErkennen),
                         Treffer: LufttzanzTreffer,
-                    }
+                    },
+                    {
+                        Art: kWsk,
+                        Stufe: add(Nachtreten),
+                        Schaden: add(STÄ, Karma, SchwachstelleErkennen),
+                        Treffer: MinWsk,
+                    },
                 ]
             },
         ]
@@ -820,91 +1013,109 @@ var Disziplinen = [
         Name: "Schütze",
         Color: "rgb(255, 0, 255)",
         Attribute: [
-            "WAH", "STÄ", "GES", "WIL"
+            "GES", "STÄ", "WAH", "WIL"
         ],
         Waffe: 5,
         inherits: DefaultCharacter,
 
-        // Talente:
-        // Blattschuss (1) 2Ü Rang
-        // Magische Markierung (1)
-        // Projektilwaffen (1)
-        // Ini + Karma (3)
-        // Weitschuss (4)
-        // Tigersprung (5)
-        // Schaden + Karma (5)
-        // Gezielter Querschläger (6)
-        // Ini +1 (7)
-        // Brandpfeil (7)
-        // Zweiter Schuss (8)
+        //                           Kreis ÜA Karma Wirkung
+        // Projektilwaffen           1     0  1     Rang+GES>kWsk Angriff
+        // Blattschuss               1     2  Rang  Angriff+Rang*Karma
+        // Magische Markierung       1     1  1     Rang+WAH>mWsk entsprechend Erfolge +2 auf Angriffe
+        // Kampfsinn                 3     1  1     Rang+WAH>mWsk und Ini größer, pro Erfolg +2 erste Angriff
+        // Ini + Karma               3     0  1     Ini+Karma
+        // Weitschuss                4
+        // Schwachstelle Erkennen    5     1  1     Rang+WAH>mWsk, Erfolge*2 auf Schaden
+        // Tigersprung               5     1  1     +Ini
+        // Schadenskarma             5     0  1     Karma auf Schaden
+        // Gezielter Querschläger    6     1  1     Boni gegen Deckung...
+        // Ini +1                    7     0  0     Ini+1
+        // Brandpfeil                7     1  1     Rang+WIL erstetzt STÄ
+        // Zweiter Schuss            8     2  1     Rang+GES>kWsk Angriff
 
 
         Kombos: [
             {
                 KomboKreis: 1,
-                Kombo: "Blattschuss + Magische Markierung",
+                Kombo: "Projektilwaffen + Blattschuss + Magische Markierung",
                 Überanstrengung: 3,
-                KarmaVerbrauch: add(Rang,1),
+                KarmaVerbrauch: add(2,Rang),
                 inherits: DefaultKombo,
                 Angriffe: [
                     {
                         Art: kWsk,
-                        Stufe: add(WAH, Rang, mul(Rang, Karma), mul(2,erfolge(add(WAH, Rang, Karma),GegnerMwsk)) ),
-                        Schaden: add(Waffe, STÄ),
+                        Stufe: add(Projektilwaffen, Blattschuss, MagischeMarkierung),
+                        Schaden: Waffenschaden,
+                        Treffer: MinWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 3,
+                Kombo: "Projektilwaffen + Blattschuss + Magische Markierung + Kampfsinn + Karma auf Ini",
+                Überanstrengung: 4,
+                KarmaVerbrauch: add(4,Rang),
+                Ini: add(GES,Karma),
+                inherits: DefaultKombo,
+                Angriffe: [
+                    {
+                        Art: kWsk,
+                        Stufe: add(Projektilwaffen, Blattschuss, MagischeMarkierung, KampfsinnErsterAngriffBonus),
+                        Schaden: Waffenschaden,
                         Treffer: MinWsk,
                     }
                 ]
             },
             {
                 KomboKreis: 5,
-                Kombo: "Blattschuss + Magische Markierung + Karma auf Schaden + Tigersprung",
-                Überanstrengung: 3,
-                KarmaVerbrauch: add(Rang,2),
-                Ini: add(GES,Rang),
+                Kombo: "Projektilwaffen + Blattschuss + Magische Markierung + Kampfsinn + Karma auf Ini + Tigersprung + Schadenskarma + Schwachstelle Erkennen",
+                Überanstrengung: 5,
+                KarmaVerbrauch: add(6,Rang),
+                Ini: add(GES,Rang,Karma,Karma),
                 inherits: DefaultKombo,
                 Angriffe: [
                     {
                         Art: kWsk,
-                        Stufe: add(WAH, Rang, mul(Rang, Karma), mul(2,erfolge(add(WAH, Rang, Karma),GegnerMwsk)) ),
-                        Schaden: add(Waffe, STÄ, Karma),
+                        Stufe: add(Projektilwaffen, Blattschuss, MagischeMarkierung, KampfsinnErsterAngriffBonus),
+                        Schaden: add(Waffenschaden,Karma,SchwachstelleErkennen),
                         Treffer: MinWsk,
                     }
                 ]
             },
             {
                 KomboKreis: 7,
-                Kombo: "Blattschuss + Magische Markierung + Karma auf Schaden + Brandpfeil",
-                Überanstrengung: 4,
-                KarmaVerbrauch: add(Rang,3),
-                Ini: add(GES,Rang,1),
+                Kombo: "Projektilwaffen + Blattschuss + Magische Markierung + Kampfsinn + Karma auf Ini + Tigersprung + Schadenskarma + Schwachstelle Erkennen + Brandpfeil + Ini+1",
+                Überanstrengung: 6,
+                KarmaVerbrauch: add(7,Rang),
+                Ini: add(GES,Rang,Karma,Karma,1),
                 inherits: DefaultKombo,
                 Angriffe: [
                     {
                         Art: kWsk,
-                        Stufe: add(WAH, Rang, mul(Rang, Karma), mul(2,erfolge(add(WAH, Rang, Karma),GegnerMwsk)) ),
-                        Schaden: add(Waffe, STÄ, Karma, Rang, Karma),
+                        Stufe: add(Projektilwaffen, Blattschuss, MagischeMarkierung, KampfsinnErsterAngriffBonus),
+                        Schaden: add(Brandpfeil,Karma,SchwachstelleErkennen),
                         Treffer: MinWsk,
                     }
                 ]
             },
             {
-                KomboKreis: 7,
-                Kombo: "(Blattschuss + Magische Markierung + Karma auf Schaden + Brandpfeil) * 2 (Zweiter Schuss)",
-                Überanstrengung: mul(2,4),
-                KarmaVerbrauch: mul(2,add(Rang,3)),
-                Ini: add(GES,Rang,1),
+                KomboKreis: 8,
+                Kombo: "Projektilwaffen + Blattschuss + Magische Markierung + Kampfsinn + Karma auf Ini + Tigersprung + Schadenskarma + Schwachstelle Erkennen + Brandpfeil + Ini+1 + Zweiter Schuss",
+                Überanstrengung: 12,
+                KarmaVerbrauch: add(9,mul(2,Rang),1),
+                Ini: add(GES,Rang,Karma,Karma,1),
                 inherits: DefaultKombo,
                 Angriffe: [
                     {
                         Art: kWsk,
-                        Stufe: add(WAH, Rang, mul(Rang, Karma), mul(2,erfolge(add(WAH, Rang, Karma),GegnerMwsk)) ),
-                        Schaden: add(Waffe, STÄ, Karma, Rang, Karma),
+                        Stufe: add(Projektilwaffen, Blattschuss, MagischeMarkierung, KampfsinnErsterAngriffBonus),
+                        Schaden: add(Brandpfeil,Karma,SchwachstelleErkennen),
                         Treffer: MinWsk,
                     },
                     {
                         Art: kWsk,
-                        Stufe: add(WAH, Rang, mul(Rang, Karma), mul(2,erfolge(add(WAH, Rang, Karma),GegnerMwsk)) ),
-                        Schaden: add(Waffe, STÄ, Karma, Rang, Karma),
+                        Stufe: add(ZweiterSchuss, Blattschuss, MagischeMarkierung),
+                        Schaden: add(Brandpfeil,Karma,SchwachstelleErkennen),
                         Treffer: MinWsk,
                     }
                 ]
