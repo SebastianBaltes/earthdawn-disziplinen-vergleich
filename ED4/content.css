@@ -20,11 +20,8 @@ th {
 	float: right;
 }
 
-.details > table > tbody {
-	overflow:auto;
-	height:20em;
-	width:100%;
-}
-
-.details > table > thead > tr{
+.details {
+ 	overflow: scroll;
+  	width: 100%;
+  	height: 50em;
 }

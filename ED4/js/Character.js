@@ -45,13 +45,13 @@ var Stufe= function(wert) {
 
 window.Gegner_Grundwert = 1;
 window.Gegner_Steigerungsbasis = 1;
-window.Gegner_Steigung = 1;
-window.Gegner_Delta_Ini = 0;
-window.Gegner_Delta_kWsk = 2;
-window.Gegner_Delta_mWsk = -1;
-window.Gegner_Delta_sWsk = -2;
-window.Gegner_Delta_kRüstung = -3;
-window.Gegner_Delta_mRüstung = -5;
+window.Gegner_Steigung = 0;
+window.Gegner_Delta_Ini = 7;
+window.Gegner_Delta_kWsk = 10;
+window.Gegner_Delta_mWsk = 8;
+window.Gegner_Delta_sWsk = 9;
+window.Gegner_Delta_kRüstung = 5;
+window.Gegner_Delta_mRüstung = 2;
 
 
 var Gegner = function(Kreis) {

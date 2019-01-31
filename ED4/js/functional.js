@@ -112,6 +112,12 @@ function div(a, b) {
     };
 }
 
+function _floor(a) {
+    return function (x) {
+        return Math.floor(funValue(a, x));
+    };
+}
+
 function pow(a, b) {
     return function (x) {
         return Math.pow(funValue(a, x), funValue(b, x));

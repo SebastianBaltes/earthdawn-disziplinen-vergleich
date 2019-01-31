@@ -4,12 +4,6 @@ window.Kampfrunden = 3;
 window.Karma_Einsatz = 1;
 
 $(function () {
-    window.Gegner_Delta_Ini = 0;
-    window.Gegner_Delta_kWsk = 0;
-    window.Gegner_Delta_mWsk = 0;
-    window.Gegner_Delta_sWsk = 0;
-    window.Gegner_Delta_kRüstung = 0;
-    window.Gegner_Delta_mRüstung = 0;
 
     $('.options').append(Slider("Kampfrunden", 1, 10, 1, refreshResult));
     $('.options').append(Slider("Max_Runden_Vorbereitung", 0, 10, 1, refreshResult));
@@ -287,6 +281,7 @@ $(function () {
                         detailTable.col("ÜA", kombo.get("Überanstrengung"));
                         detailTable.col("Karma", KarmaVerbrauch(kombo));
                         detailTable.col("Fäden", kombo.get("Fäden"));
+                        detailTable.col("Extra Fäden", ExtraFäden(kombo));
                         detailTable.col("Erw-Fäden", kombo.get("ErweiterteFäden"));
                         detailTable.col("WILS", kombo.get("WILS"));
                         detailTable.col("Gegner-Ini", kombo.get("GegnerIni"));
@@ -302,7 +297,21 @@ $(function () {
                             detailTable.col("Angriff-" + nr + "-Stufe", char.get("Stufe"));
                             detailTable.col("Angriff-" + nr + "-Treffer", char.get("Treffer"));
                             detailTable.col("Angriff-" + nr + "-Erfolge", char.get("Erfolge"));
-                            detailTable.col("Angriff-" + nr + "-Lufttzanz Treffer", LufttzanzTreffer(kombo));
+                            // detailTable.col("Angriff-" + nr + "-Lufttzanz ini3", max(0,min(1,add(erfolge(Ini, GegnerIni),-2)))(kombo));
+                            // detailTable.col("Angriff-" + nr + "-Lufttanz Erfolge", erfolge(Ini, GegnerIni)(kombo));
+                            // detailTable.col("Angriff-" + nr + "-Lufttzanz i1", IniErfolge3(kombo));
+                            // detailTable.col("Angriff-" + nr + "-Lufttzanz i2", MinWsk(kombo));
+                            // detailTable.col("Angriff-" + nr + "-Lufttzanz i3", add(Nahkampfwaffen)(kombo));
+                            // detailTable.col("Angriff-" + nr + "-Lufttzanz i41", probe(Nahkampfwaffen, GegnerWsk)(kombo));
+                            // detailTable.col("Angriff-" + nr + "-Lufttzanz i42", probe(Nahkampfwaffen, GegnerKwsk)(kombo));
+                            // detailTable.col("Angriff-" + nr + "-Lufttzanz i412", GegnerWsk(kombo));
+                            // detailTable.col("Angriff-" + nr + "-Lufttzanz i422", GegnerKwsk(kombo));
+                            // detailTable.col("Angriff-" + nr + "-Lufttzanz i423", val('Art')(kombo));
+                            // detailTable.col("Angriff-" + nr + "-Lufttzanz i423", kombo.Art);
+                            // detailTable.col("Angriff-" + nr + "-Lufttzanz T2", mul(IniErfolge3,MinWsk)(kombo));
+                            //
+                            // detailTable.col("Angriff-" + nr + "-Lufttzanz Treffer", LufttzanzTreffer(kombo));
+
                             detailTable.col("Angriff-" + nr + "-Schadens-stufe", char.get("SchadenMitErfolgen"));
                             detailTable.col("Angriff-" + nr + "-Schaden", char.get("SchadenEinzelrunde"));
                             detailTable.col("Angriff-" + nr + "-Schaden / Runde", char.get("SchadenProRunde"));
@@ -318,8 +327,11 @@ $(function () {
 
         var detailsDiv = $("<div class='details'/>");
         detailsDiv.append(detailTable.toHtml());
-        $('table',detailsDiv).addClass('fancyTable');
         $('.result').append("<br/>").append(detailsDiv);
+        $('.details > table').tableHeadFixer({
+            head: true,
+            left: 4,
+        });
 
     }
 

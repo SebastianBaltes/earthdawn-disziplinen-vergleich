@@ -3,7 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="a00982b3-0ce8-410e-b877-a35d5b79faf8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ED4/content.css" beforeDir="false" afterPath="$PROJECT_DIR$/ED4/content.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ED4/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/ED4/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ED4/js/Character.js" beforeDir="false" afterPath="$PROJECT_DIR$/ED4/js/Character.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ED4/js/Disziplinen.js" beforeDir="false" afterPath="$PROJECT_DIR$/ED4/js/Disziplinen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ED4/js/Vergleich.js" beforeDir="false" afterPath="$PROJECT_DIR$/ED4/js/Vergleich.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ED4/js/functional.js" beforeDir="false" afterPath="$PROJECT_DIR$/ED4/js/functional.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,27 +20,28 @@
     <session id="-1907854939">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="6" />
+          <entry key="project.closed" value="10" />
           <entry key="project.open.time.0" value="1" />
-          <entry key="project.open.time.5" value="2" />
+          <entry key="project.open.time.3" value="1" />
+          <entry key="project.open.time.5" value="3" />
           <entry key="project.open.time.6" value="3" />
           <entry key="project.open.time.7" value="2" />
-          <entry key="project.open.time.8" value="2" />
-          <entry key="project.opened" value="10" />
+          <entry key="project.open.time.8" value="3" />
+          <entry key="project.opened" value="13" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="CSS" value="1" />
-          <entry key="HTML" value="4" />
-          <entry key="JavaScript" value="71" />
+          <entry key="CSS" value="2" />
+          <entry key="HTML" value="8" />
+          <entry key="JavaScript" value="80" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="CSS" value="25" />
-          <entry key="HTML" value="14" />
-          <entry key="JavaScript" value="18419" />
+          <entry key="CSS" value="39" />
+          <entry key="HTML" value="25" />
+          <entry key="JavaScript" value="19852" />
         </counts>
       </usages-collector>
     </session>
@@ -43,30 +49,21 @@
   <component name="FileEditorManager">
     <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+        <leaf>
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/ED4/js/Disziplinen.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="885">
-                  <caret line="215" column="8" lean-forward="true" selection-start-line="215" selection-start-column="8" selection-end-line="260" selection-end-column="9" />
+                <state relative-caret-position="596">
+                  <caret line="1408" column="40" lean-forward="true" selection-start-line="1408" selection-start-column="40" selection-end-line="1408" selection-end-column="40" />
                 </state>
               </provider>
             </entry>
           </file>
           <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ED4/js/successTableED4.js">
+            <entry file="file://$PROJECT_DIR$/ED4/js/Vergleich.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="15">
-                  <caret line="1" column="163" selection-start-line="1" selection-start-column="163" selection-end-line="1" selection-end-column="163" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ED4/js/StufenMath.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="640">
-                  <caret line="95" column="23" lean-forward="true" selection-start-line="95" selection-start-column="23" selection-end-line="95" selection-end-column="23" />
+                <state relative-caret-position="4543">
+                  <caret line="330" column="11" selection-start-line="330" selection-start-column="11" selection-end-line="330" selection-end-column="27" />
                 </state>
               </provider>
             </entry>
@@ -75,20 +72,47 @@
       </split-first>
       <split-second>
         <leaf>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/ED4/js/Disziplinen.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="959">
-                  <caret line="436" column="63" lean-forward="true" selection-start-line="436" selection-start-column="63" selection-end-line="436" selection-end-column="63" />
+                <state relative-caret-position="945">
+                  <caret line="1405" column="34" selection-start-line="1405" selection-start-column="34" selection-end-line="1405" selection-end-column="34" />
                 </state>
               </provider>
             </entry>
           </file>
           <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ED4/js/Vergleich.js">
+            <entry file="file://$PROJECT_DIR$/ED4/index.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="629">
-                  <caret line="103" column="55" selection-start-line="103" selection-start-column="35" selection-end-line="103" selection-end-column="55" />
+                <state relative-caret-position="544">
+                  <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/ED4/content.css">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="442">
+                  <caret line="26" column="1" lean-forward="true" selection-start-line="26" selection-start-column="1" selection-end-line="26" selection-end-column="1" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/ED4/thirdparty/jQuery-Plugin-For-Fixed-Table-Header-Footer-Columns-TableHeadFixer/index.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="493">
+                  <caret line="29" column="29" lean-forward="true" selection-start-line="29" selection-start-column="29" selection-end-line="29" selection-end-column="29" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/ED4/thirdparty/jQuery-Plugin-For-Fixed-Table-Header-Footer-Columns-TableHeadFixer/examples/fixHeader.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="272">
+                  <caret line="16" selection-start-line="11" selection-end-line="16" />
                 </state>
               </provider>
             </entry>
@@ -99,28 +123,7 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>KarmaVerbrauch</find>
-      <find>foldl</find>
-      <find>.kombo</find>
-      <find>thirdparty/</find>
-      <find>_(</find>
-      <find>_.chain</find>
-      <find>contains</find>
-      <find>_.foldl</find>
-      <find>_.foldr</find>
-      <find>val</find>
-      <find>TrefferErfolge</find>
-      <find>ß_</find>
-      <find>Erfolge</find>
-      <find>Tierne</find>
-      <find>Min2xIni</find>
-      <find>[^,]</find>
-      <find>Ini</find>
-      <find>LufttzanzTreffer</find>
-      <find>Gegner_Steigung</find>
-      <find>minWsk</find>
       <find>flot</find>
-      <find>GegnerWsk</find>
       <find>Treffer</find>
       <find>Schütze</find>
       <find>Schwachstelle</find>
@@ -129,6 +132,27 @@
       <find>CHA</find>
       <find>Kriefer</find>
       <find>Schwachste</find>
+      <find>Verspotten</find>
+      <find>ExtraFäden</find>
+      <find>Extra</find>
+      <find>Kampfriten</find>
+      <find>MinWsk</find>
+      <find>krieger</find>
+      <find>Krieger</find>
+      <find>Luftt</find>
+      <find>LufttzanzTreffer</find>
+      <find>Nahkampfwaffen</find>
+      <find>window.kWsk</find>
+      <find>kWsk</find>
+      <find>Art</find>
+      <find>GegnerWsk</find>
+      <find>SchwungvollerAngriff</find>
+      <find>erfolge</find>
+      <find>TrefferErfolge</find>
+      <find>Erfolge</find>
+      <find>Kobrastoss</find>
+      <find>Schmetterschlag</find>
+      <find>,5</find>
     </findStrings>
     <replaceStrings>
       <replace>probability</replace>
@@ -160,16 +184,16 @@
       <list>
         <option value="$PROJECT_DIR$/ED2/js/Vergleich.js" />
         <option value="$PROJECT_DIR$/ED2/js/Disziplinen.js" />
-        <option value="$PROJECT_DIR$/ED4/content.css" />
         <option value="$PROJECT_DIR$/ED4/js/slider.js" />
         <option value="$PROJECT_DIR$/ED4/js/table.js" />
-        <option value="$PROJECT_DIR$/ED4/js/functional.js" />
-        <option value="$PROJECT_DIR$/ED4/js/Character.js" />
-        <option value="$PROJECT_DIR$/ED4/index.html" />
-        <option value="$PROJECT_DIR$/ED4/js/Vergleich.js" />
         <option value="$PROJECT_DIR$/ED4/js/successTableED4.js" />
         <option value="$PROJECT_DIR$/ED4/js/StufenMath.js" />
+        <option value="$PROJECT_DIR$/ED4/js/Character.js" />
+        <option value="$PROJECT_DIR$/ED4/js/functional.js" />
         <option value="$PROJECT_DIR$/ED4/js/Disziplinen.js" />
+        <option value="$PROJECT_DIR$/ED4/index.html" />
+        <option value="$PROJECT_DIR$/ED4/js/Vergleich.js" />
+        <option value="$PROJECT_DIR$/ED4/content.css" />
       </list>
     </option>
   </component>
@@ -179,11 +203,144 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
+  <component name="NodePackageJsonFileManager">
+    <packageJsonPaths>
+      <path value="$PROJECT_DIR$/ED4/thirdparty/jQuery-Plugin-For-Fixed-Table-Header-Footer-Columns-TableHeadFixer/package.json" />
+    </packageJsonPaths>
+  </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="562" />
+    <option name="x" value="557" />
     <option name="y" value="30" />
-    <option name="width" value="3278" />
+    <option name="width" value="3283" />
     <option name="height" value="2125" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State />
+          <State>
+            <id>Assignment issuesJavaScript</id>
+          </State>
+          <State>
+            <id>BashSupport</id>
+          </State>
+          <State>
+            <id>CSS</id>
+          </State>
+          <State>
+            <id>Code SmellPHP</id>
+          </State>
+          <State>
+            <id>Code StylePHP</id>
+          </State>
+          <State>
+            <id>Code style issuesJavaScript</id>
+          </State>
+          <State>
+            <id>CoffeeScript</id>
+          </State>
+          <State>
+            <id>Control flow issuesJavaScript</id>
+          </State>
+          <State>
+            <id>Cucumber</id>
+          </State>
+          <State>
+            <id>Error handlingJavaScript</id>
+          </State>
+          <State>
+            <id>General</id>
+          </State>
+          <State>
+            <id>GeneralCoffeeScript</id>
+          </State>
+          <State>
+            <id>GeneralJavaScript</id>
+          </State>
+          <State>
+            <id>HTML</id>
+          </State>
+          <State>
+            <id>Ini Files</id>
+          </State>
+          <State>
+            <id>Internationalization</id>
+          </State>
+          <State>
+            <id>JSON and JSON5</id>
+          </State>
+          <State>
+            <id>JavaScript</id>
+          </State>
+          <State>
+            <id>JavaScript function metricsJavaScript</id>
+          </State>
+          <State>
+            <id>JavaScript validity issuesJavaScript</id>
+          </State>
+          <State>
+            <id>Less</id>
+          </State>
+          <State>
+            <id>Naming conventionsJavaScript</id>
+          </State>
+          <State>
+            <id>Naming conventionsPHP</id>
+          </State>
+          <State>
+            <id>Node.jsJavaScript</id>
+          </State>
+          <State>
+            <id>PHP</id>
+          </State>
+          <State>
+            <id>PHPDocPHP</id>
+          </State>
+          <State>
+            <id>Potentially confusing code constructsJavaScript</id>
+          </State>
+          <State>
+            <id>Probable bugsCSS</id>
+          </State>
+          <State>
+            <id>Probable bugsJavaScript</id>
+          </State>
+          <State>
+            <id>Probable bugsPHP</id>
+          </State>
+          <State>
+            <id>RELAX NG</id>
+          </State>
+          <State>
+            <id>RegExp</id>
+          </State>
+          <State>
+            <id>Sass/SCSS</id>
+          </State>
+          <State>
+            <id>UndefinedPHP</id>
+          </State>
+          <State>
+            <id>Vue</id>
+          </State>
+          <State>
+            <id>XML</id>
+          </State>
+          <State>
+            <id>XPath</id>
+          </State>
+          <State>
+            <id>XSLT</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>NonAsciiCharacters</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
@@ -193,7 +350,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -212,10 +368,32 @@
               <item name="ED4" type="462c0819:PsiDirectoryNode" />
               <item name="js" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="earthdawn-disziplinen-vergleich" type="b2602c69:ProjectViewProjectNode" />
+              <item name="earthdawn-disziplinen-vergleich" type="462c0819:PsiDirectoryNode" />
+              <item name="ED4" type="462c0819:PsiDirectoryNode" />
+              <item name="thirdparty" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="earthdawn-disziplinen-vergleich" type="b2602c69:ProjectViewProjectNode" />
+              <item name="earthdawn-disziplinen-vergleich" type="462c0819:PsiDirectoryNode" />
+              <item name="ED4" type="462c0819:PsiDirectoryNode" />
+              <item name="thirdparty" type="462c0819:PsiDirectoryNode" />
+              <item name="jQuery-Plugin-For-Fixed-Table-Header-Footer-Columns-TableHeadFixer" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="earthdawn-disziplinen-vergleich" type="b2602c69:ProjectViewProjectNode" />
+              <item name="earthdawn-disziplinen-vergleich" type="462c0819:PsiDirectoryNode" />
+              <item name="ED4" type="462c0819:PsiDirectoryNode" />
+              <item name="thirdparty" type="462c0819:PsiDirectoryNode" />
+              <item name="jQuery-Plugin-For-Fixed-Table-Header-Footer-Columns-TableHeadFixer" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -223,13 +401,15 @@
     <property name="ignore_missing_gitignore" value="true" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="/usr/bin/node" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/ED4/thirdparty" />
+      <recent name="$PROJECT_DIR$/ED4/js/thirdparty" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/ED4" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/ED4/js/thirdparty" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -263,18 +443,21 @@
       <workItem from="1547703399543" duration="4951000" />
       <workItem from="1548500976726" duration="16671000" />
       <workItem from="1548571185263" duration="11278000" />
-      <workItem from="1548618055152" duration="9403000" />
+      <workItem from="1548618055152" duration="10099000" />
+      <workItem from="1548697963682" duration="12448000" />
+      <workItem from="1548962228446" duration="770000" />
+      <workItem from="1548963009887" duration="7492000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="118794000" />
+    <option name="totallyTimeSpent" value="140200000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="562" y="30" width="3278" height="2125" extended-state="0" />
+    <frame x="557" y="30" width="3283" height="2125" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12511528" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12492327" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -323,13 +506,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ED4/js/table.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="32" column="37" lean-forward="true" selection-start-line="32" selection-start-column="37" selection-end-line="32" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ED4/js/Stufen.js">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -347,45 +523,10 @@
     <entry file="file://$PROJECT_DIR$/ED2/index.html">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/ED4/js/Character.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="705">
-          <caret line="47" column="26" selection-start-line="47" selection-start-column="26" selection-end-line="47" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ED4/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="30" column="11" lean-forward="true" selection-start-line="30" selection-start-column="11" selection-end-line="30" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ED4/thirdparty/lodash.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
           <caret line="8" column="14" selection-start-line="8" selection-start-column="14" selection-end-line="8" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ED4/content.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="29" column="1" selection-start-line="29" selection-start-column="1" selection-end-line="29" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ED4/js/prohabilitiesTableED2.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ED4/js/functional.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2610">
-          <caret line="174" column="9" selection-start-line="174" selection-start-column="9" selection-end-line="174" selection-end-column="9" />
         </state>
       </provider>
     </entry>
@@ -396,31 +537,100 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/ED4/js/prohabilitiesTableED2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ED4/js/StufenMath.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="95" column="23" lean-forward="true" selection-start-line="95" selection-start-column="23" selection-end-line="95" selection-end-column="23" />
+        <state relative-caret-position="1122">
+          <caret line="123" column="4" selection-start-line="123" selection-start-column="4" selection-end-line="123" selection-end-column="4" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ED4/js/successTableED4.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
+        <state relative-caret-position="18">
           <caret line="1" column="163" selection-start-line="1" selection-start-column="163" selection-end-line="1" selection-end-column="163" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ED4/js/functional.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="25" column="9" selection-start-line="25" selection-start-column="9" selection-end-line="25" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ED4/js/table.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="833">
+          <caret line="49" column="23" selection-start-line="49" selection-start-column="20" selection-end-line="49" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ED4/js/Character.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="539">
+          <caret line="44" selection-start-line="44" selection-end-line="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ED4/thirdparty/jQuery-Plugin-To-Freeze-Table-Columns-Rows-On-Scroll/js/jquery-1.11.0.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ED4/thirdparty/jQuery-Plugin-To-Freeze-Table-Columns-Rows-On-Scroll/Example1.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ED4/thirdparty/jQuery-Plugin-For-Fixed-Table-Header-Footer-Columns-TableHeadFixer/assets/bootstrap-3.3.2/js/tests/unit/tab.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ED4/thirdparty/jQuery-Plugin-For-Fixed-Table-Header-Footer-Columns-TableHeadFixer/examples/fixHeader.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" selection-start-line="11" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ED4/thirdparty/jQuery-Plugin-For-Fixed-Table-Header-Footer-Columns-TableHeadFixer/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="29" column="29" lean-forward="true" selection-start-line="29" selection-start-column="29" selection-end-line="29" selection-end-column="29" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ED4/js/Vergleich.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="103" column="55" selection-start-line="103" selection-start-column="35" selection-end-line="103" selection-end-column="55" />
+        <state relative-caret-position="4543">
+          <caret line="330" column="11" selection-start-line="330" selection-start-column="11" selection-end-line="330" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ED4/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ED4/content.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="26" column="1" lean-forward="true" selection-start-line="26" selection-start-column="1" selection-end-line="26" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ED4/js/Disziplinen.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="885">
-          <caret line="215" column="8" lean-forward="true" selection-start-line="215" selection-start-column="8" selection-end-line="260" selection-end-column="9" />
+        <state relative-caret-position="596">
+          <caret line="1408" column="40" lean-forward="true" selection-start-line="1408" selection-start-column="40" selection-end-line="1408" selection-end-column="40" />
         </state>
       </provider>
     </entry>
