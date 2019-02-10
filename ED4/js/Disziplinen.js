@@ -223,6 +223,12 @@ var AlchemistenKombo = {
     Fehlschlag: AlchmFehlschlag,
 }
 
+var Passionshonig = 2;
+var Brandkiesel = 12;
+var Splitterbombe = 12;
+var Königswasser = 20;
+var Kampfsaft = 3;
+var Alkahest = 24;
 
 var Disziplinen = [
 
@@ -232,6 +238,111 @@ var Disziplinen = [
     // ist gerade Immobilität natürlich extrem mächtig). Auch Mali auf den Gegner wie durch Verspotten werden
     // nicht voll angerechnet.
 
+    // ///////////////////////////////////////////////////////////////////////
+    //
+
+    {
+        Name: "Illusionist",
+        Color: "rgb(210, 143, 80)",
+        Attribute: [
+            "WAH", "WIL", "CHA"
+        ],
+        inherits: DefaultZauberer,
+        // Talente:
+
+        // Spruchzauberei (1) 0Ü
+        // Erweiterte Matrix (5) -1 Faden
+        // Willenstärke (6) 1Ü
+        // Verspotten (1)
+        // Wirkung (5) + Karma => +2 Stufen
+
+        Kombos: [
+            {
+                KomboKreis: 1,
+                Kombo: "Illusionärer Blitz",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 5,
+                MinFäden: 0,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+                        Art: mWsk,
+                        Stufe: add(Rang,Karma,WAH,Verspotten),
+                        Schaden: add(WILS, 4, mul(ExtraFäden,2)),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 2,
+                Kombo: "Phantomflamme",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 6,
+                MinFäden: 1,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+
+                        Art: kWsk,
+                        Stufe: add(Rang,Karma,WAH,Verspotten),
+                        Schaden: add(WILS, 6, mul(ExtraFäden,2), mul(Erfolge,2)),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 4,
+                Kombo: "Blitzschlag",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 8,
+                MinFäden: 1,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+
+                        Art: kWsk,
+                        Stufe: add(Rang,Karma,WAH,Verspotten),
+                        Schaden: add(WILS, 7, mul(ExtraFäden,2)),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 5,
+                Kombo: "Phantomfeuerball",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 9,
+                MinFäden: 1,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+
+                        Art: kWsk,
+                        Stufe: add(Rang,Karma,WAH,Verspotten),
+                        Schaden: add(WILS, 5, mul(ExtraFäden,2), mul(Erfolge,2), 1, 2),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+            {
+                KomboKreis: 7,
+                Kombo: "Phantomfeuerball",
+                inherits: ZauberKombo,
+                Webschwierigkeit: 12,
+                MinFäden: 4,
+                FixKarmaVerbrauch: 1,
+                Angriffe: [
+                    {
+
+                        Art: mWsk,
+                        Stufe: add(Rang,Karma,WAH,Verspotten),
+                        Schaden: add(Kreis, 8, mul(ExtraFäden,2), mul(Erfolge,2), 2),
+                        Treffer: MinZauberWsk,
+                    }
+                ]
+            },
+        ],
+    },
 
     // ///////////////////////////////////////////////////////////////////////
     //
@@ -271,7 +382,7 @@ var Disziplinen = [
                     {
                         Art: kWsk,
                         Stufe: mul(AlchmTreffer, Wurfwaffen),
-                        Schaden: add(Mixturmagie,12),
+                        Schaden: add(Mixturmagie,Brandkiesel),
                         Treffer: MinWsk,
                     }
                 ]
@@ -288,7 +399,7 @@ var Disziplinen = [
                     {
                         Art: kWsk,
                         Stufe: mul(AlchmTreffer, Wurfwaffen),
-                        Schaden: add(Mixturmagie,16),
+                        Schaden: add(Mixturmagie,Splitterbombe),
                         Treffer: MinWsk,
                     }
                 ]
@@ -305,7 +416,7 @@ var Disziplinen = [
                     {
                         Art: kWsk,
                         Stufe: mul(AlchmTreffer, Wurfwaffen),
-                        Schaden: add(Mixturmagie, 21),
+                        Schaden: add(Mixturmagie, Königswasser),
                         Treffer: MinWsk,
                     }
                 ]
@@ -318,12 +429,12 @@ var Disziplinen = [
                 Ini: GES,
                 Überanstrengung: 1,
                 KarmaVerbrauch: 2,
-                Karma: add(GrundKarma,3),
+                Karma: add(GrundKarma,Passionshonig),
                 Angriffe: [
                     {
                         Art: kWsk,
                         Stufe: mul(AlchmTreffer, Wurfwaffen),
-                        Schaden: add(Mixturmagie,21),
+                        Schaden: add(Mixturmagie,Königswasser),
                         Treffer: MinWsk,
                     }
                 ]
@@ -336,12 +447,12 @@ var Disziplinen = [
                 Ini: add(GES,3),
                 Überanstrengung: 1,
                 KarmaVerbrauch: 2,
-                Karma: add(GrundKarma,3),
+                Karma: add(GrundKarma,Passionshonig),
                 Angriffe: [
                     {
                         Art: kWsk,
-                        Stufe: mul(AlchmTreffer, Wurfwaffen,3),
-                        Schaden: add(Mixturmagie,21,3),
+                        Stufe: mul(AlchmTreffer, Wurfwaffen,Kampfsaft),
+                        Schaden: add(Mixturmagie,Königswasser,Kampfsaft),
                         Treffer: MinWsk,
                     }
                 ]
@@ -354,12 +465,12 @@ var Disziplinen = [
                 Ini: add(GES,3),
                 Überanstrengung: 1,
                 KarmaVerbrauch: 2,
-                Karma: add(GrundKarma,2),
+                Karma: add(GrundKarma,Passionshonig),
                 Angriffe: [
                     {
                         Art: kWsk,
-                        Stufe: mul(AlchmTreffer, Wurfwaffen,3),
-                        Schaden: add(Mixturmagie,27,3),
+                        Stufe: mul(AlchmTreffer, Wurfwaffen,Kampfsaft),
+                        Schaden: add(Mixturmagie,Alkahest,Kampfsaft),
                         Treffer: MinWsk,
                     }
                 ]
@@ -543,7 +654,7 @@ var Disziplinen = [
                 inherits: DefaultKombo,
                 Kombo: "Nahkampfwaffen + Verspotten",
                 Ini: add(GES),
-                Überanstrengung: 1,
+                Überanstrengung: 0,
                 KarmaVerbrauch: 2,
                 Angriffe: [
                     {
@@ -1351,7 +1462,7 @@ var Disziplinen = [
                         Stufe: add(WAH, Rang, Karma),
                         Schaden: add(WILS, 5, mul(ExtraFäden,2)),
                         Treffer: MinZauberWsk,
-                        FolgeRundenAngriffAutomatisch: 1,
+                        //FolgeRundenAngriffAutomatisch: 1,
                     }
                 ]
             },
@@ -1504,7 +1615,7 @@ var Disziplinen = [
                         Stufe: add(WAH, Rang, 2, Karma),
                         Schaden: add(WILS, 3, mul(ExtraFäden,2), 2),
                         Treffer: MinZauberWsk,
-                        FolgeRundenAngriffAutomatisch: Rang,
+                        //FolgeRundenAngriffAutomatisch: Rang,
                     }
                 ]
             },
@@ -1612,7 +1723,6 @@ var Disziplinen = [
                         Stufe: add(WAH, Rang, Karma),
                         Schaden: add(WILS, 2, mul(ExtraFäden,2)),
                         Treffer: MinZauberWsk,
-                        FolgeRundenAngriffAutomatisch: Rang,
                     }
                 ]
             },
@@ -1680,7 +1790,7 @@ var Disziplinen = [
                         Schaden: add(WILS, 5, WILS, 2, mul(ExtraFäden,2)),
                         Treffer: MinZauberWsk,
                         Erfolge: add(TrefferErfolge,1),
-                        FolgeRundenAngriffAutomatisch: Rang,
+                        //FolgeRundenAngriffAutomatisch: Rang,
                     }
                 ]
             },
@@ -1698,7 +1808,7 @@ var Disziplinen = [
                         Schaden: add(WILS, 5, mul(2, add(Kreis, 2)), mul(ExtraFäden,2)),
                         Treffer: MinZauberWsk,
                         Erfolge: add(TrefferErfolge,1),
-                        FolgeRundenAngriffAutomatisch: Rang,
+                        //FolgeRundenAngriffAutomatisch: Rang,
                     }
                 ]
             },
@@ -1716,7 +1826,7 @@ var Disziplinen = [
                         Schaden: add(WILS, 8, mul(ExtraFäden,2)),
                         Treffer: MinZauberWsk,
                         Erfolge: add(TrefferErfolge,1),
-                        FolgeRundenAngriffAutomatisch: Rang,
+                        //FolgeRundenAngriffAutomatisch: Rang,
                     }
                 ]
             },
