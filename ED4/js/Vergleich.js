@@ -2,12 +2,26 @@
 
 window.Kampfrunden = 3;
 window.Karma_Einsatz = 1;
+window.Sprengfass = 1;
+window.Disziplinen = _.orderBy(Disziplinen, d=>d.Name);
+
+window.DisziplinenSelected = Disziplinen.map(d=>d.Name);
 
 $(function () {
+
+    $('.options').append(MultiSelect('DisziplinenSelected',Array.from(window.DisziplinenSelected),refreshResult));
 
     $('.options').append(Slider("Kampfrunden", 1, 10, 1, refreshResult));
     $('.options').append(Slider("Max_Runden_Vorbereitung", 0, 10, 1, refreshResult));
     $('.options').append(Slider("Karma_Einsatz", 0, 1, 0.1, refreshResult));
+    $('.options').append(Slider("Sprengfass", 0, 1, 1, refreshResult));
+
+    $('.options').append(SingleSelect("StandardgegnerAuswahl", StandardGegner.map(x=>x.Name), function() {
+        refreshStandardGegner();
+        $('body').trigger('uirefresh');
+        refreshResult();
+    }));
+
     $('.options').append(Slider("Gegner_Grundwert", 1, 80, 1, refreshResult));
     $('.options').append(Slider("Gegner_Steigung", 0, 3, 0.1, refreshResult));
     $('.options').append(Slider("Gegner_Steigerungsbasis", 1, 1.66, 0.01, refreshResult));
@@ -17,11 +31,15 @@ $(function () {
     $('.options').append(Slider("Gegner_Delta_sWsk", -15, +15, 1, refreshResult));
     $('.options').append(Slider("Gegner_Delta_kRüstung", -15, +15, 1, refreshResult));
     $('.options').append(Slider("Gegner_Delta_mRüstung", -15, +15, 1, refreshResult));
+    $('.options').append(Slider("Gegner_Angriff", -20, +20, 1, refreshResult));
+
     refreshResult();
 
     function refreshResult() {
         $('.result').empty();
         var disziplin2Schaden = [];
+        var disziplinenShown = Disziplinen.filter(d=>window.DisziplinenSelected.includes(d.Name));
+        console.log(window.DisziplinenSelected,disziplinenShown);
 
         var MAX_KREIS = 8;
 
@@ -48,13 +66,13 @@ $(function () {
             disziplin2Schaden.push(d2s);
         })();
 
-        Disziplinen.forEach(disziplin =>disziplin.Kombos.forEach(kombo=> {
+        disziplinenShown.forEach(disziplin =>disziplin.Kombos.forEach(kombo=> {
             kombo.Angriffe.forEach(angriff => {
                 _.defaults(kombo,DefaultAngriff);
             });
         }));
 
-        Disziplinen.forEach(function (disziplin) {
+        disziplinenShown.forEach(function (disziplin) {
             var d2s = {
                 Name: disziplin.Name,
                 Color: disziplin.Color,
@@ -161,7 +179,13 @@ $(function () {
         var colors = [];
         var series = [];
         var disIdx = 0;
-        _.each(disziplin2Schaden, function (d2s) {
+
+        let disForChart = _.clone(disziplin2Schaden);
+        disForChart.forEach((s,i)=>s.order=disForChart.length-i);
+        disForChart.slice(0,2).forEach((s,i)=>s.order=i);
+        disForChart = _.orderBy(disForChart,s=>s.order);
+
+        _.each(disForChart, function (d2s) {
             colors.push(d2s.Color);
             var data = [];
             series.push({
@@ -274,7 +298,7 @@ $(function () {
                         detailTable.col("Rang", kombo.get("Rang"));
                         detailTable.col("Karma", kombo.get("Karma"));
                         detailTable.col("Waffe", kombo.get("Waffe"));
-                        detailTable.col("Alchm Fehlschlag", kombo.get("AlchmFehlschlag"));
+                        detailTable.col("Alchm Fehlschlag", kombo.get("Fehlschlag"));
                         detailTable.col("Summe Schaden", kombo.get("SchadenEinzelrundeSum"));
                         detailTable.col("Summe Schaden / Runde", kombo.get("SchadenProRundeSum"));
                         detailTable.col("Kombo-Ini", kombo.get("Ini"));
@@ -328,10 +352,6 @@ $(function () {
         var detailsDiv = $("<div class='details'/>");
         detailsDiv.append(detailTable.toHtml());
         $('.result').append("<br/>").append(detailsDiv);
-        $('.details > table').tableHeadFixer({
-            head: true,
-            left: 4,
-        });
 
     }
 

@@ -25,3 +25,20 @@ th {
   	width: 100%;
   	height: 50em;
 }
+
+.SingleSelect,
+.MultiSelect {
+	margin-top: 1em;
+	margin-bottom: 1em;
+	display: block;
+}
+
+.SingleSelect .label,
+.MultiSelect .label {
+	display: block;
+}
+
+.MultiSelect select {
+	width: 15em;
+	height: 12em;
+}

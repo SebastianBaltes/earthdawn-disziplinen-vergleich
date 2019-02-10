@@ -43,33 +43,6 @@ var Stufe= function(wert) {
   return Math.floor((wert-1)/3+2);
 };
 
-window.Gegner_Grundwert = 1;
-window.Gegner_Steigerungsbasis = 1;
-window.Gegner_Steigung = 0;
-window.Gegner_Delta_Ini = 7;
-window.Gegner_Delta_kWsk = 10;
-window.Gegner_Delta_mWsk = 8;
-window.Gegner_Delta_sWsk = 9;
-window.Gegner_Delta_kRüstung = 5;
-window.Gegner_Delta_mRüstung = 2;
-
-
-var Gegner = function(Kreis) {
-  var grundwert = Gegner_Grundwert + Gegner_Steigung * Kreis + Math.pow(Gegner_Steigerungsbasis,Kreis);
-  return {
-    Ini: Math.max(1,grundwert+Gegner_Delta_Ini),
-    Wsk: {
-      kWsk: Math.max(1,grundwert+Gegner_Delta_kWsk),
-      mWsk: Math.max(1,grundwert+Gegner_Delta_mWsk),
-      sWsk: Math.max(1,grundwert+Gegner_Delta_sWsk),
-    },
-    Rüstung: {
-      kWsk: Math.max(0,grundwert+Gegner_Delta_kRüstung),
-      mWsk: Math.max(0,grundwert+Gegner_Delta_mRüstung)
-    }
-  };
-};
-
 function GetPropOrVal(char,propName) {
     if (char[propName] !== 'undefined') {
         return char[propName];
@@ -98,6 +71,7 @@ var Character = function(Disziplin,Kreis,RundenVorlauf) {
   t.GegnerRüstung = {};
   t.GegnerRüstung[kWsk] = gegner.Rüstung.kWsk;
   t.GegnerRüstung[mWsk] = gegner.Rüstung.mWsk;
+  t.GegnerAngriff = gegner.Angriff;
   t.get = function get(propName) {
     return funValue(GetPropOrVal(this,propName),this);
   };

@@ -182,3 +182,12 @@ function integrate(start, end, f2) {
     return x => _.range(start, end).reduce((acc, i) => acc + f2(i)(x), 0);
 }
 
+function nth(index_,array_) {
+    return x => {
+        const index = funValue(index_,x);
+        const array = funValue(array_,x);
+        const i = Math.max(0,Math.min(array.length-1,index));
+        console.log(index,i);
+        return array[i];
+    };
+}
