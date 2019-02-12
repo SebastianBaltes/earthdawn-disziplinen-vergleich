@@ -70,6 +70,15 @@ window.AnzahlRundenAngriffAlsAktion = val("AnzahlRundenAngriffAlsAktion");
 window.FolgeRundenAngriffAutomatisch = val("FolgeRundenAngriffAutomatisch");
 window.AngriffNurErsteRunde = val("AngriffNurErsteRunde");
 
+window.AngriffGegnerAnzahl = val('AngriffGegnerAnzahl');
+window.AngriffRadius = val('AngriffRadius');
+window.GegnerAnzahl = val('GegnerAnzahl');
+window.GegnerVerteiltRadius = val('GegnerVerteiltRadius');
+window.kreisfläche = (r)=>ß('kreisfläche',mul(r,r,Math.PI));
+window.GegnerAnzahlProQM = (r)=>ß('GegnerAnzahlProQM',div(GegnerAnzahl,kreisfläche(GegnerVerteiltRadius)));
+window.Flächenschaden = ß('Flächenschaden',mul(kreisfläche(AngriffRadius),GegnerAnzahlProQM));
+window.AngriffGegnerAnzahlSafe = ß('AngriffGegnerAnzahlSafe',_floor(max(0,min(GegnerAnzahl,AngriffGegnerAnzahl))));
+
 
 // RundenVorlaufMin: Minimale Anzahl Runden, die die Kombo an Vorlauf braucht
 window.RundenVorlaufMin = val("RundenVorlaufMin");
@@ -97,6 +106,7 @@ window.SchadenMitErfolgen = val('SchadenMitErfolgen');
 window.StandardSchadenEinzelrunde = ß('StandardSchadenEinzelrunde',
     sub(
         mul(Wiederholungen,
+            AngriffGegnerAnzahlSafe,
             min(1, Treffer),
             max(0,
                 sub(
@@ -197,6 +207,8 @@ var DefaultKombo = {
     SchadenEinzelrundeSum: SchadenEinzelrundeSum,
     SchadenProRundeSum: SchadenProRundeSum,
     Fehlschlag: 0,
+    AngriffGegnerAnzahl: 1,
+    AngriffRadius: 0,
 }
 
 var ZauberKombo = {
@@ -1723,6 +1735,8 @@ var Disziplinen = [
                         Stufe: add(WAH, Rang, Karma),
                         Schaden: add(WILS, 2, mul(ExtraFäden,2)),
                         Treffer: MinZauberWsk,
+                        AngriffGegnerAnzahl: Flächenschaden,
+                        AngriffRadius: 4,
                     }
                 ]
             },

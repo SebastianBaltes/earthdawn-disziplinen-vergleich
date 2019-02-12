@@ -33,15 +33,22 @@ $(function () {
     $('.options').append(Slider("Gegner_Delta_mRüstung", -15, +15, 1, refreshResult));
     $('.options').append(Slider("Gegner_Angriff", -20, +20, 1, refreshResult));
 
+    $('.options').append(Slider("Gegner_Anzahl", 1, 100, 1, refreshResult, 'quadratic'));
+    $('.options').append(Slider("Gegner_verteilt_auf_Radius", 1, 500, 1, refreshResult,'quadratic'));
+
+
+    var disziplin2Schaden = [];
+    var MAX_KREIS = 8;
+
+    const refreshDetailsDebounced = _.debounce(refreshDetails);
     refreshResult();
 
     function refreshResult() {
         $('.result').empty();
-        var disziplin2Schaden = [];
         var disziplinenShown = Disziplinen.filter(d=>window.DisziplinenSelected.includes(d.Name));
         console.log(window.DisziplinenSelected,disziplinenShown);
 
-        var MAX_KREIS = 8;
+        disziplin2Schaden = [];
 
         (function () {
             var d2s = {
@@ -270,9 +277,13 @@ $(function () {
             $('.result').append(sumTable.toHtml());
         })();
 
+        refreshDetailsDebounced();
+    }
 
-        $('.result').append("<br/>");
-        $('.result').append("<h3>Details</h3>");
+    function refreshDetails() {
+        $('.resultDetails').empty();
+        $('.resultDetails').append("<br/>");
+        $('.resultDetails').append("<h3>Details</h3>");
 
         var detailTable = Table([], 1);
         detailTable.fixed("Kreis", 0);
@@ -343,6 +354,10 @@ $(function () {
                             detailTable.col("Angriff-" + nr + "-Wieder-holungen", char.get("Wiederholungen"));
                             detailTable.col("Angriff-" + nr + "-Runden Angriff als Aktion", char.get("AnzahlRundenAngriffAlsAktion"));
                             detailTable.col("Angriff-" + nr + "-Runden Angriff automatisch", char.get("FolgeRundenAngriffAutomatisch"));
+                            // detailTable.col("Angriff-" + nr + "-Gegner Anzahl1", char.get("GegnerAnzahl"));
+                            // detailTable.col("Angriff-" + nr + "-Gegner Anzahl2", char.get("AngriffGegnerAnzahl"));
+                            detailTable.col("Angriff-" + nr + "-Gegner Anzahl", AngriffGegnerAnzahlSafe(char));
+                            detailTable.col("Angriff-" + nr + "-Radius", char.get("AngriffRadius"));
                         });
                     });
                 }
@@ -351,8 +366,7 @@ $(function () {
 
         var detailsDiv = $("<div class='details'/>");
         detailsDiv.append(detailTable.toHtml());
-        $('.result').append("<br/>").append(detailsDiv);
-
+        $('.resultDetails').append("<br/>").append(detailsDiv);
     }
 
 

@@ -9,6 +9,8 @@ window.Gegner_Delta_sWsk = 9;
 window.Gegner_Delta_kRüstung = 5;
 window.Gegner_Delta_mRüstung = 2;
 window.Gegner_Angriff = 12;
+window.Gegner_Anzahl = 1;
+window.Gegner_verteilt_auf_Radius = 1;
 
 var Gegner = function(Kreis) {
     var grundwert = Gegner_Grundwert + Gegner_Steigung * Kreis + Math.pow(Gegner_Steigerungsbasis,Kreis);
@@ -24,6 +26,8 @@ var Gegner = function(Kreis) {
             mWsk: Math.max(0,grundwert+Gegner_Delta_mRüstung),
         },
         Angriff: Math.max(0,grundwert+Gegner_Angriff),
+        Anzahl: Gegner_Anzahl,
+        verteilt_auf_Radius: Gegner_verteilt_auf_Radius,
     };
 };
 
