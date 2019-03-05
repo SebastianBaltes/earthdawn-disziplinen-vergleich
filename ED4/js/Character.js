@@ -23,9 +23,6 @@ var Steigerung = function (count, Kreis, index) {
         arr[i] = 0;
     }
     for (var i = 1; i < Kreis; i++) {
-        if (i % 6 == 5) {
-            continue;
-        }
         arr[(i - 1) % count]++;
     }
     return arr[index];
@@ -55,7 +52,9 @@ var Character = function (Disziplin, Kreis, RundenVorlauf) {
     t.Kreis = Kreis;
     t.RundenVorlauf = RundenVorlauf;
     t.Disziplin = Disziplin;
-    _.union(Disziplin.Attribute, _.difference(["GES", "STÄ", "ZÄH", "WAH", "WIL", "CHA"], Disziplin.Attribute)).forEach(function (key, i) {
+    var attribute = _.union(Disziplin.Attribute, _.difference(["GES", "STÄ", "ZÄH", "WAH", "WIL", "CHA"], Disziplin.Attribute));
+    console.log('attribute',attribute);
+    attribute.forEach(function (key, i) {
         t[key + "Wert"] = Attributswert(Disziplin.Attribute.length, Kreis, i);
         t[key] = Stufe(Attributswert(Disziplin.Attribute.length, Kreis, i));
     });

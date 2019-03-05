@@ -1640,7 +1640,7 @@ var Disziplinen = [
         Name: "Elementarist",
         Color: "rgb(0, 0, 255)",
         Attribute: [
-            "WAH", "WIL", "GES"
+            "WAH", "WIL"
         ],
         inherits: DefaultZauberer,
         // Talente:
